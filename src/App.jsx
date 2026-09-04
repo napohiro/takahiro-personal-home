@@ -7,6 +7,9 @@ import Works from './components/Works'
 import Favorites from './components/Favorites'
 import RandomTakahiro from './components/RandomTakahiro'
 import LifeTimeline from './components/LifeTimeline'
+import MemoryGacha from './components/MemoryGacha'
+import FamilyArchive from './components/FamilyArchive'
+import PersonalHomePossibility from './components/PersonalHomePossibility'
 import SocialLinks from './components/SocialLinks'
 import Footer from './components/Footer'
 
@@ -23,6 +26,9 @@ export default function App() {
         <Favorites />
         <RandomTakahiro />
         <LifeTimeline />
+        <MemoryGacha />
+        <FamilyArchive />
+        <PersonalHomePossibility />
         <SocialLinks />
       </main>
       <Footer />

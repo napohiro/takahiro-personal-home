@@ -125,28 +125,7 @@ export const randomPhrases = [
   '人生はまだ制作途中。',
 ]
 
-export const timeline = [
-  {
-    label: 'THEN',
-    title: '営業という仕事を長く経験',
-    desc: '人と話し、考え、伝えることを仕事にしてきた。',
-  },
-  {
-    label: 'CHANGE',
-    title: 'AIと出会う',
-    desc: '「専門家じゃなくても、こんなことまで作れるのか。」',
-  },
-  {
-    label: 'NOW',
-    title: 'AIと一緒に、アプリ・Web・文章を作る',
-    desc: '会社にも店舗にも縛られない、自分だけの制作を続けている。',
-  },
-  {
-    label: 'NEXT',
-    title: 'まだ決まっていない。',
-    desc: 'だから面白い。',
-  },
-]
+// LIFE TIMELINEのデータは src/data/timeline.js に移動しました。
 
 // SNSリンク。show:false の間は画面に表示されません（データとしては残ります）。
 // 本人がアカウントを決めたら、url・handle を設定して show を true にしてください。

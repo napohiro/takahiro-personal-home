@@ -36,6 +36,10 @@ export default function RandomTakahiro() {
             <h2 className="section-title" style={{ fontSize: 'clamp(1.6rem, 5vw, 2.4rem)' }}>
               今日のTAKAHIRO
             </h2>
+            <p className="random-box__lead">
+              ボタンを押すたび、その日のTAKAHIROっぽい一言がランダムで出ます。
+              性格診断でも統計でもAI分析でもない、完全な遊びです。
+            </p>
           </div>
 
           {index === null ? (
@@ -50,6 +54,8 @@ export default function RandomTakahiro() {
               <p className="random-box__percent">
                 TODAY'S TAKAHIRO <strong>{percent}%</strong>
               </p>
+              <p className="random-box__disclaimer">※数字はランダムです。意味はありません。</p>
+              <p className="random-box__afterword">今日はこんな感じらしい。</p>
             </div>
           )}
 

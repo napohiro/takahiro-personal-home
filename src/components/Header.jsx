@@ -9,6 +9,8 @@ const NAV_ITEMS = [
   { href: '#works', label: 'Works' },
   { href: '#favorites', label: 'Favorites' },
   { href: '#timeline', label: 'Timeline' },
+  { href: '#gacha', label: 'Gacha' },
+  { href: '#family', label: 'Family' },
   ...(hasVisibleSocialLinks ? [{ href: '#outside', label: 'Outside' }] : []),
 ]
 
