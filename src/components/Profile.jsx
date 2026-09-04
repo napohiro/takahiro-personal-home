@@ -1,5 +1,5 @@
 import useReveal from '../hooks/useReveal'
-import { bio, identityTags } from '../data/profile'
+import { bio, bioHighlight, identityTags } from '../data/profile'
 import { TagIcon } from './icons'
 
 export default function Profile() {
@@ -11,14 +11,15 @@ export default function Profile() {
         <div className={`profile__head reveal ${visible ? 'is-visible' : ''}`} ref={ref}>
           <span className="eyebrow">Who is TAKAHIRO?</span>
           <h2 className="section-title">
-            肩書き1個じゃ、
+            肩書きひとつでは、
             <br />
-            説明できない人。
+            たぶん説明できない。
           </h2>
           <div className="profile__bio">
             {bio.map((line) => (
               <p key={line}>{line}</p>
             ))}
+            <p className="profile__bio-highlight">{bioHighlight}</p>
           </div>
         </div>
 
@@ -34,7 +35,13 @@ export default function Profile() {
           ))}
         </ul>
 
-        <p className="profile__note">— それが、今のところのTAKAHIROです。</p>
+        <p className="profile__note">— たぶん、それが今のTAKAHIROです。</p>
+
+        <a href="#timeline" className="profile__timeline-link">
+          どうやって今の自分になったのか
+          <span className="profile__timeline-link-arrow">→</span>
+          LIFE TIMELINE
+        </a>
       </div>
     </section>
   )

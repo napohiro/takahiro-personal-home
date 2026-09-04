@@ -14,7 +14,10 @@ function TimelineNode({ item, index }) {
     >
       <span className="life-timeline__dot" />
       <div className="life-timeline__card">
-        <p className="life-timeline__year">{item.year || item.phase}</p>
+        <div className="life-timeline__meta">
+          <span className="life-timeline__index">{String(index + 1).padStart(2, '0')}</span>
+          <span className="life-timeline__year">{item.year || item.phase}</span>
+        </div>
         <h3 className="life-timeline__title">{item.title}</h3>
         <p className="life-timeline__desc">{item.desc}</p>
         {item.image && (

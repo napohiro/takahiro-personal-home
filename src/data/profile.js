@@ -9,12 +9,17 @@ export const heroPhoto = {
   caption: 'somewhere outside.',
 }
 
-// WHO IS TAKAHIRO のプロフィール文章（短い3行に分けて表示）。
+// WHO IS TAKAHIRO のプロフィール文章。
+// 「今のTAKAHIROがどんな人なのか」を短く要約する場所。具体的な経歴・出来事は
+// src/data/timeline.js（LIFE TIMELINE）側で扱うため、ここでは重複させない。
 export const bio = [
-  '営業の仕事を長く経験。',
-  'その後AIに触れ、「これ、自分でも作れるんじゃないか？」から、アプリ・Webサイト・文章・LINEスタンプなど、いろいろなものを作るようになる。',
-  '今も、面白そうなものは、まず試してみる。が基本姿勢。',
+  'エンジニアから営業へ進み、成功哲学に惹かれ、生命保険業で独立。',
+  '親友の死をきっかけに人生を見直し、今はAIやデジタルを使いながら、仕事も遊びも自分なりに面白くしようとしている。',
+  '絵を描くことも、キャンプも、水泳も、ものづくりも好き。アナログもデジタルも、どちらかに決める必要はないと思っている。',
 ]
+
+// bio の最後に、少し強調して見せる一文。
+export const bioHighlight = '面白そうなら、まず試してみる。'
 
 // icon は src/components/icons.jsx の TagIcon が対応しているキーを指定。
 export const identityTags = [

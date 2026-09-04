@@ -614,6 +614,14 @@ p {
   line-height: 1.75;
 }
 
+.profile__bio-highlight {
+  margin-top: 6px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--offwhite);
+  line-height: 1.6;
+}
+
 .profile__tags {
   margin-top: 44px;
   display: grid;
@@ -666,6 +674,30 @@ p {
   margin-top: 28px;
   color: var(--text-dim);
   font-size: 0.95rem;
+}
+
+.profile__timeline-link {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  transition: color 0.3s ease;
+}
+
+.profile__timeline-link-arrow {
+  transition: transform 0.3s ease;
+}
+
+.profile__timeline-link:hover {
+  color: var(--yellow);
+}
+
+.profile__timeline-link:hover .profile__timeline-link-arrow {
+  transform: translateX(4px);
 }
 
 @media (min-width: 720px) {
@@ -1274,7 +1306,7 @@ p {
 .life-timeline__item--yellow { --node-color: var(--yellow); }
 
 .life-timeline__card {
-  padding: 20px 22px;
+  padding: 24px 26px;
   border-radius: var(--radius-md);
   border: 1px solid var(--line);
   background: var(--bg-card);
@@ -1287,6 +1319,19 @@ p {
   opacity: 1;
   transform: translateY(0);
   border-color: color-mix(in srgb, var(--node-color, var(--yellow)) 30%, var(--line));
+}
+
+.life-timeline__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.life-timeline__index {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--text-faint);
 }
 
 .life-timeline__year {
@@ -1370,6 +1415,10 @@ p {
   .life-timeline__item:nth-child(odd) .life-timeline__card {
     text-align: right;
     margin-left: auto;
+  }
+
+  .life-timeline__item:nth-child(odd) .life-timeline__meta {
+    justify-content: flex-end;
   }
 
   .life-timeline__item:nth-child(odd) .life-timeline__photo {
