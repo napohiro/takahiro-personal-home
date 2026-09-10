@@ -1568,10 +1568,36 @@ p {
   color: var(--text-faint);
 }
 
+.memory-gacha__cta-note {
+  max-width: 360px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+.memory-gacha__embed {
+  width: 100%;
+  max-width: 440px;
+  margin-top: 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #0e0f16;
+  box-shadow: 0 20px 40px -24px #ffcf3f30;
+}
+
+.memory-gacha__embed-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border: 0;
+}
+
 .memory-gacha__cta-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin-top: 4px;
   font-size: 1rem;
   font-weight: 700;
   color: var(--offwhite);
@@ -1593,11 +1619,11 @@ p {
   transform: translate(3px, -3px);
 }
 
-.memory-gacha__cta-note {
-  max-width: 360px;
-  font-size: 0.82rem;
-  line-height: 1.7;
-  color: var(--text-dim);
+.memory-gacha__cta-caption {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
 }
 
 /* ==========================================================================
