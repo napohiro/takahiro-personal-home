@@ -1544,6 +1544,62 @@ p {
   letter-spacing: 0.1em;
 }
 
+.memory-gacha__cta {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.memory-gacha__cta-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px dashed var(--line);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.memory-gacha__cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--offwhite);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.memory-gacha__cta-link:hover {
+  color: var(--yellow);
+  transform: translateY(-2px);
+}
+
+.memory-gacha__cta-arrow {
+  font-family: var(--font-en);
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.memory-gacha__cta-link:hover .memory-gacha__cta-arrow {
+  transform: translate(3px, -3px);
+}
+
+.memory-gacha__cta-note {
+  max-width: 360px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
 /* ==========================================================================
    Family Archive
    ========================================================================== */

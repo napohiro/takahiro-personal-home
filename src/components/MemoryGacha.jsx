@@ -66,6 +66,22 @@ export default function MemoryGacha() {
 
           {count > 0 && <p className="memory-gacha__count">{count}回、めくった。</p>}
         </div>
+
+        <div className="memory-gacha__cta">
+          <span className="memory-gacha__cta-badge">Optional Feature</span>
+          <a
+            href="https://omoide-gacha.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="memory-gacha__cta-link"
+          >
+            実際の「思い出ガチャ」を開いてみる
+            <span className="memory-gacha__cta-arrow">↗</span>
+          </a>
+          <p className="memory-gacha__cta-note">
+            TAKAHIROが実際に作ったWebアプリです。PERSONALでは、こんな遊び機能を追加することもできます。
+          </p>
+        </div>
       </div>
     </section>
   )
