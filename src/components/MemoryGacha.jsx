@@ -17,13 +17,12 @@ export default function MemoryGacha() {
             PERSONALでは、写真や思い出をただ並べるだけでなく、こんな「遊べる仕掛け」を追加することもできます。
           </p>
 
-          <div className="memory-gacha__embed">
-            <iframe
-              src="https://omoide-gacha.netlify.app/"
-              title="思い出ガチャ（実際に公開しているWebアプリ）"
+          <div className="memory-gacha__visual">
+            <img
+              src="/images/gacha/memory-gacha-transparent.webp"
+              alt="思い出ガチャ"
               loading="lazy"
-              referrerPolicy="no-referrer"
-              className="memory-gacha__embed-frame"
+              className="memory-gacha__visual-img"
             />
           </div>
 

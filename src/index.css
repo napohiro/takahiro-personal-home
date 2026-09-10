@@ -1459,22 +1459,39 @@ p {
   color: var(--text-dim);
 }
 
-.memory-gacha__embed {
+.memory-gacha__visual {
+  position: relative;
   width: 100%;
-  max-width: 440px;
-  margin-top: 4px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--line);
-  overflow: hidden;
-  background: #0e0f16;
-  box-shadow: 0 20px 40px -24px #ffcf3f30;
+  max-width: 280px;
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
 }
 
-.memory-gacha__embed-frame {
-  display: block;
+.memory-gacha__visual::before {
+  content: '';
+  position: absolute;
+  top: 14%;
+  left: 50%;
+  width: 68%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, #ffcf3f2e 0%, transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+.memory-gacha__visual-img {
+  position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
-  border: 0;
+  height: auto;
+  filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.55));
+}
+
+@media (min-width: 640px) {
+  .memory-gacha__visual {
+    max-width: 400px;
+  }
 }
 
 .memory-gacha__cta-link {
