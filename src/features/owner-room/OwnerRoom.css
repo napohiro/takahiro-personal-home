@@ -129,6 +129,30 @@
   width: 100%;
 }
 
+/* --- 公開サイトへ戻るリンク --- */
+
+.or-back-link {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 0.8rem;
+  color: #b7b3a2;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.or-back-link:hover {
+  color: #ffcf3f;
+}
+
+.or-back-link--gate {
+  align-self: flex-start;
+  margin-bottom: 12px;
+  padding: 4px 0;
+}
+
 /* --- ダッシュボード --- */
 
 .or-dashboard {
@@ -141,7 +165,7 @@
 
 .or-dashboard-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -248,6 +272,24 @@
 
 .or-publish-message.is-error {
   color: #ff7a45;
+}
+
+/* --- セキュリティ（パスワード変更） --- */
+
+.or-panel--security {
+  border-color: #ffcf3f30;
+}
+
+.or-panel-caption {
+  margin: -8px 0 0;
+  font-size: 0.82rem;
+  color: #f4efdd;
+}
+
+.or-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 @media (min-width: 640px) {

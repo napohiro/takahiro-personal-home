@@ -1,4 +1,5 @@
 import { isAuthenticated } from './_shared/session.js'
+import { getAuthoritativeVersion } from './_shared/passwordStore.js'
 
 // リポジトリ情報は秘密ではないため、環境変数ではなくサーバー側定数として固定する。
 const GITHUB_OWNER = 'napohiro'
@@ -58,7 +59,16 @@ export async function handler(event) {
   }
 
   const sessionSecret = process.env.OWNER_ROOM_SESSION_SECRET
-  if (!sessionSecret || !isAuthenticated(event, sessionSecret)) {
+  let authenticated = false
+  if (sessionSecret) {
+    try {
+      const currentVersion = await getAuthoritativeVersion()
+      authenticated = isAuthenticated(event, sessionSecret, currentVersion)
+    } catch {
+      authenticated = false
+    }
+  }
+  if (!authenticated) {
     return {
       statusCode: 401,
       headers: { 'Content-Type': 'application/json' },

@@ -20,28 +20,35 @@ function sign(payloadBase64, secret) {
   return crypto.createHmac('sha256', secret).update(payloadBase64).digest('base64url')
 }
 
-export function createSessionToken(secret) {
-  const payload = { exp: Date.now() + SESSION_TTL_SECONDS * 1000 }
+// passwordVersion(pv): 現在Netlify Blobsに保存されているパスワードの世代番号。
+// Blobs未移行(環境変数フォールバック)時は 0 を使う。
+// ログイン時点のpvをトークンへ焼き込み、各認証チェックで「今の正しいpv」と
+// 突き合わせることで、パスワード変更後に旧セッションを一括で無効化できる。
+export function createSessionToken(secret, passwordVersion = 0) {
+  const payload = { exp: Date.now() + SESSION_TTL_SECONDS * 1000, pv: passwordVersion }
   const payloadBase64 = base64url(JSON.stringify(payload))
   const signature = sign(payloadBase64, secret)
   return `${payloadBase64}.${signature}`
 }
 
+// 署名・有効期限が正しければpayload({exp, pv})を返し、そうでなければnull。
+// (以前はboolean を返していたが、呼び出し側でpvを見られるようにpayload自体を返す)
 export function verifySessionToken(token, secret) {
-  if (!token || typeof token !== 'string' || !token.includes('.')) return false
+  if (!token || typeof token !== 'string' || !token.includes('.')) return null
   const [payloadBase64, signature] = token.split('.')
-  if (!payloadBase64 || !signature) return false
+  if (!payloadBase64 || !signature) return null
 
   const expectedSignature = sign(payloadBase64, secret)
   const a = Buffer.from(signature)
   const b = Buffer.from(expectedSignature)
-  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return false
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null
 
   try {
     const payload = JSON.parse(Buffer.from(payloadBase64, 'base64url').toString('utf8'))
-    return typeof payload.exp === 'number' && Date.now() < payload.exp
+    if (typeof payload.exp !== 'number' || Date.now() >= payload.exp) return null
+    return payload
   } catch {
-    return false
+    return null
   }
 }
 
@@ -87,9 +94,29 @@ export function buildClearCookie() {
   return parts.join('; ')
 }
 
-export function isAuthenticated(event, secret) {
+// currentPasswordVersion: 呼び出し側が事前に(必要ならBlobsから)取得した
+// 「今まさに正しいpasswordVersion」。トークン内のpvと一致しなければ、
+// 署名や有効期限が正しくてもログイン済みとは扱わない
+// (=パスワード変更で発行済みの全セッションを一括失効させる仕組み)。
+export function isAuthenticated(event, secret, currentPasswordVersion) {
   const cookies = parseCookies(event.headers?.cookie || event.headers?.Cookie)
-  return verifySessionToken(cookies[COOKIE_NAME], secret)
+  const payload = verifySessionToken(cookies[COOKIE_NAME], secret)
+  if (!payload) return false
+  return payload.pv === currentPasswordVersion
+}
+
+// 文字列の長さを含めてタイミング攻撃に強い比較。
+// パスワード等の秘密値をユーザー入力と比較するときは常にこれを使う。
+export function timingSafeStringEqual(a, b) {
+  const bufA = Buffer.from(String(a))
+  const bufB = Buffer.from(String(b))
+  if (bufA.length !== bufB.length) {
+    // 長さが違うと timingSafeEqual が例外を投げるため、
+    // 長さの違い自体で早期returnせず、ダミー比較で時間差を減らす。
+    crypto.timingSafeEqual(bufA, bufA)
+    return false
+  }
+  return crypto.timingSafeEqual(bufA, bufB)
 }
 
 export { COOKIE_NAME, SESSION_TTL_SECONDS }
