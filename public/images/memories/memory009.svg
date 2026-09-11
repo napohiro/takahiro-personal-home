@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <radialGradient id="g09" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#c9f07a"/>
+      <stop offset="55%" stop-color="#5a8a2b"/>
+      <stop offset="100%" stop-color="#2a3b1a"/>
+    </radialGradient>
+    <filter id="grain09">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="url(#g09)"/>
+  <rect width="400" height="400" filter="url(#grain09)"/>
+  <text x="200" y="215" font-size="120" text-anchor="middle" dominant-baseline="middle">☂️</text>
+</svg>

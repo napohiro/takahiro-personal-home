@@ -1,4 +1,8 @@
 import useReveal from '../hooks/useReveal'
+import OmoideGacha from '../features/omoide-gacha/components/OmoideGacha'
+import { getAllMemories } from '../features/omoide-gacha/data/memoryRepository'
+
+const memories = getAllMemories()
 
 export default function MemoryGacha() {
   const [ref, visible] = useReveal()
@@ -17,25 +21,10 @@ export default function MemoryGacha() {
             PERSONALでは、写真や思い出をただ並べるだけでなく、こんな「遊べる仕掛け」を追加することもできます。
           </p>
 
-          <div className="memory-gacha__embed">
-            <iframe
-              src="https://omoide-gacha.netlify.app/?embed=1"
-              title="思い出ガチャ（その場で遊べます）"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              className="memory-gacha__embed-frame"
-            />
+          <div className="memory-gacha__omoide-wrap">
+            <OmoideGacha memories={memories} mode="embed" />
           </div>
 
-          <a
-            href="https://omoide-gacha.netlify.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="memory-gacha__cta-link memory-gacha__cta-link--secondary"
-          >
-            全画面で遊ぶ
-            <span className="memory-gacha__cta-arrow">↗</span>
-          </a>
           <p className="memory-gacha__cta-caption">思い出ガチャはオプション機能の一例です。</p>
         </div>
       </div>

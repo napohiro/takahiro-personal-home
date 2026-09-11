@@ -1,0 +1,717 @@
+/* ============================================================
+   思い出ガチャ 本体スタイル（共通コア）
+   ============================================================
+   すべてのクラス名に og- プレフィックスを付け、埋め込み先サイトの
+   既存CSSと衝突しないようにしている。CSS変数も :root ではなく
+   .og-root スコープに閉じ込め、ホストページのグローバルCSSを汚さない。
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700&family=Shippori+Mincho:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap");
+
+.og-root {
+  --og-gold: #d4af6a;
+  --og-gold-bright: #f0d9a0;
+  --og-gold-deep: #9c7a3c;
+  --og-ink: #0b0906;
+  --og-cream: #f3e6c8;
+  --og-subcopy-gold: #e2c98f;
+
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: max(env(safe-area-inset-top), 10px) 12px max(env(safe-area-inset-bottom), 10px);
+  font-family: "Noto Serif JP", "Shippori Mincho", "Hiragino Mincho ProN", serif;
+  color: var(--og-cream);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: contain;
+}
+
+.og-root * {
+  box-sizing: border-box;
+}
+
+.og-root img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.og-root button {
+  font-family: inherit;
+  color: inherit;
+}
+
+@media (min-width: 640px) {
+  .og-root {
+    max-width: 780px;
+  }
+}
+
+/* fullscreen: TOY BOX等から開く単独画面。ビューポート全体を占有する想定 */
+.og-root--fullscreen {
+  min-height: 100dvh;
+  background: var(--og-ink);
+}
+
+/* embed: ページ内埋め込み用。親要素の高さに合わせ、背景は透明のまま
+   ホストページの背景を透過させる */
+.og-root--embed {
+  height: 100%;
+  min-height: 0;
+  background: transparent;
+  overscroll-behavior: auto;
+}
+
+.og-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 8%, rgba(212, 175, 106, 0.14), transparent 60%),
+    radial-gradient(ellipse 120% 80% at 50% 110%, rgba(120, 70, 20, 0.16), transparent 55%),
+    linear-gradient(180deg, #100c08 0%, #0b0906 45%, #070502 100%);
+}
+
+/* PC等、横幅に余裕がある画面では本体写真を薄くぼかして全面に敷き、
+   左右の余白も「同じ世界の中」に見えるようにする(fullscreenのみ) */
+@media (min-width: 640px) {
+  .og-backdrop {
+    background-image:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(0, 0, 0, 0.55), rgba(5, 4, 2, 0.88) 70%),
+      url("/images/gacha/gacha-machine-base.png");
+    background-size: cover, 130% auto;
+    background-position: center, center 20%;
+    background-repeat: no-repeat, no-repeat;
+    filter: blur(3px);
+  }
+}
+
+.og-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: radial-gradient(circle, #fff 0.6px, transparent 0.6px);
+  background-size: 3px 3px;
+}
+
+/* ============================================================
+   ヘッダー
+   ============================================================ */
+
+.og-header {
+  text-align: center;
+  flex-shrink: 0;
+  padding-top: 0;
+}
+
+.og-title {
+  margin: 0;
+  font-size: clamp(21px, 5.6vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  background: linear-gradient(180deg, var(--og-gold-bright), var(--og-gold) 55%, var(--og-gold-deep));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 14px rgba(212, 175, 106, 0.25);
+}
+
+.og-subtitle {
+  margin: 2px 0 0;
+  font-family: "Noto Serif JP", "Shippori Mincho", serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(13px, 3.6vw, 15px);
+  letter-spacing: 0.14em;
+  color: var(--og-subcopy-gold);
+}
+
+/* ============================================================
+   戻るボタン（onBackが渡されたときのみ表示）
+   ============================================================ */
+
+.og-back-button {
+  appearance: none;
+  border: none;
+  align-self: flex-start;
+  flex-shrink: 0;
+  margin-bottom: 4px;
+  padding: 8px 14px 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: rgba(240, 224, 186, 0.75);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(212, 175, 106, 0.2);
+  cursor: pointer;
+}
+
+.og-back-button:active {
+  color: var(--og-cream);
+}
+
+/* ============================================================
+   メインエリア
+   ============================================================ */
+
+.og-main {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.6vh, 14px);
+  min-height: 0;
+  padding: 2px 0;
+}
+
+.og-instruction {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(13px, 3.6vw, 15px);
+  letter-spacing: 0.06em;
+  color: rgba(240, 224, 186, 0.82);
+  min-height: 1.4em;
+}
+
+.og-instruction--active {
+  animation: og-instruction-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes og-instruction-pulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+
+/* ============================================================
+   ガチャ本体（実写画像ベース）
+   ============================================================ */
+
+.og-machine {
+  position: relative;
+  width: min(94vw, 70vh, 460px);
+  aspect-ratio: 1122 / 1402;
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.6));
+}
+
+/* PC: ヘッダーと案内文が画面内に収まる範囲で、本体を高さ75〜82vh程度まで大きく */
+@media (min-width: 640px) {
+  .og-machine {
+    width: min(58vw, 63vh, 700px);
+  }
+}
+
+.og-machine--shaking {
+  animation: og-machine-shake 0.4s ease-in-out;
+}
+
+@keyframes og-machine-shake {
+  0% { transform: translate(0, 0) rotate(0); }
+  20% { transform: translate(-3px, 1px) rotate(-0.5deg); }
+  40% { transform: translate(3px, -1px) rotate(0.5deg); }
+  60% { transform: translate(-4px, 0) rotate(-0.35deg); }
+  80% { transform: translate(3px, 1px) rotate(0.35deg); }
+  100% { transform: translate(0, 0) rotate(0); }
+}
+
+/* 内部でカプセルが転がっている間の、ごくわずかな振動(ガコンより控えめ) */
+.og-machine--rolling {
+  animation: og-machine-micro-shake 0.16s ease-in-out infinite;
+}
+
+@keyframes og-machine-micro-shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-0.6px, 0.4px); }
+  50% { transform: translate(0.5px, -0.4px); }
+  75% { transform: translate(-0.4px, 0.3px); }
+}
+
+.og-machine-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* --- ドーム内、回転中だけ揺れる前景カプセル --- */
+
+.og-dome-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.og-dome-fx-capsule {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.08) 60%, transparent 75%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  animation-name: og-dome-fx-calm;
+  animation-duration: 4.5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* --- ハンドル回転量に応じた3段階の揺れ (0-180 静止 / 180-360 微揺れ / 360- 活発) --- */
+
+@keyframes og-dome-fx-calm {
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  50% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes og-dome-fx-gentle {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) translate(0, 0) scale(1); }
+  50% { opacity: 0.5; transform: translate(-50%, -50%) translate(-1.5px, 1px) scale(1.02); }
+}
+
+@keyframes og-dome-fx-jitter {
+  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) translate(0, 0); }
+  25% { opacity: 0.6; transform: translate(-50%, -50%) translate(-3px, 2px); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) translate(3px, -2px); }
+  75% { opacity: 0.55; transform: translate(-50%, -50%) translate(-2px, 1px); }
+}
+
+/* 選ばれた1個だけ、本体内部へ消えていく */
+.og-dome-fx-capsule--entering {
+  animation: og-capsule-enter-body 0.28s ease-in forwards !important;
+}
+
+@keyframes og-capsule-enter-body {
+  0% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.82); }
+  100% { opacity: 0; transform: translate(-50%, 20%) scale(0.1); }
+}
+
+.og-dome-fx-glint {
+  position: absolute;
+  left: 24%;
+  top: 16%;
+  width: 46%;
+  height: 30%;
+  border-radius: 50%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.16), transparent 60%);
+  opacity: 0.5;
+  animation: og-dome-glint-breathe 5s ease-in-out infinite;
+}
+
+@keyframes og-dome-glint-breathe {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.6; }
+}
+
+/* --- ハンドル: 元画像の静止ハンドルを隠すぼかし土台(回転しない) --- */
+
+.og-handle-blocker {
+  position: absolute;
+  width: 42.78%;
+  height: 34.24%;
+  transform: translate(-50%, -50%);
+  background-image: url("/images/gacha/handle-overlay.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: blur(9px) brightness(0.62) saturate(0.85);
+  pointer-events: none;
+}
+
+/* --- ハンドル: 実写から切り出した腕+ノブ。中心軸で回転する --- */
+
+.og-handle-rotor {
+  position: absolute;
+  background-image: url("/images/gacha/handle-overlay.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* --- ハンドル: 見た目より大きい透明タッチ判定領域 --- */
+
+.og-handle-touch-zone {
+  position: absolute;
+  width: clamp(170px, 46%, 250px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 5;
+}
+
+.og-handle-touch-zone:active {
+  cursor: grabbing;
+}
+
+/* --- 排出口のカプセル --- */
+
+.og-output-slot {
+  position: absolute;
+  transform: translate(-50%, -55%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 8;
+}
+
+/* ============================================================
+   カプセル
+   ============================================================ */
+
+.og-capsule {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.og-capsule:disabled {
+  cursor: default;
+}
+
+.og-capsule-body {
+  position: relative;
+  width: 68px;
+  height: 68px;
+}
+
+.og-capsule-body--bobbing {
+  animation: og-capsule-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes og-capsule-bob {
+  0%, 100% { transform: translate(6px, 0) rotate(-2deg); }
+  50% { transform: translate(6px, -6px) rotate(-2deg); }
+}
+
+/* 排出口上から落ちてきて、1〜2回軽くバウンドして止まる */
+.og-capsule-body--falling {
+  animation: og-capsule-fall-bounce 0.9s cubic-bezier(0.3, 0, 0.4, 1) both;
+}
+
+@keyframes og-capsule-fall-bounce {
+  0% { transform: translate(0, -74px) rotate(-10deg) scale(1); }
+  50% { transform: translate(2px, 0) rotate(3deg) scaleY(0.82) scaleX(1.1); }
+  62% { transform: translate(3px, -15px) rotate(-2deg) scaleY(1.04) scaleX(0.98); }
+  78% { transform: translate(5px, 0) rotate(1deg) scaleY(0.94) scaleX(1.04); }
+  90% { transform: translate(6px, -5px) rotate(-1deg) scale(1); }
+  100% { transform: translate(6px, 0) rotate(-2deg) scale(1); }
+}
+
+/* タップ直後、開き始める前にわずかに沈み込む */
+.og-capsule-body--sinking {
+  transform: translate(6px, 0) rotate(-2deg);
+  animation: og-capsule-sink 0.17s ease-out forwards;
+}
+
+@keyframes og-capsule-sink {
+  0% { transform: translate(6px, 0) rotate(-2deg) scale(1); }
+  100% { transform: translate(6px, 2px) rotate(-1deg) scale(0.94); }
+}
+
+.og-capsule-half {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 52%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.og-capsule-top {
+  top: 0;
+  border-radius: 34px 34px 5px 5px;
+  background: radial-gradient(circle at 32% 22%, #fbedc8, var(--og-gold) 50%, #8a6a2f 100%);
+}
+
+.og-capsule-bottom {
+  bottom: 0;
+  border-radius: 5px 5px 34px 34px;
+  background: linear-gradient(180deg, rgba(246, 239, 221, 0.55), rgba(228, 214, 174, 0.4) 60%, rgba(205, 185, 135, 0.5));
+  backdrop-filter: blur(1px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.og-capsule-shine {
+  position: absolute;
+  top: 8%;
+  left: 16%;
+  width: 24%;
+  height: 32%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  filter: blur(1.5px);
+}
+
+/* 透明な下半分から、折りたたまれた写真がうっすら透けて見える(中身は分からない程度) */
+.og-capsule-inner-hint {
+  position: absolute;
+  left: 30%;
+  bottom: 14%;
+  width: 40%;
+  height: 26%;
+  border-radius: 2px;
+  background: rgba(255, 250, 235, 0.35);
+  box-shadow: 0 0 3px rgba(255, 250, 235, 0.25);
+  transform: rotate(-4deg);
+}
+
+.og-capsule-body--opening {
+  transform: translate(6px, 2px) rotate(-1deg) scale(0.94);
+}
+
+.og-capsule-body--opening .og-capsule-top {
+  animation: og-capsule-open-top 0.6s ease-in forwards;
+}
+
+.og-capsule-body--opening .og-capsule-bottom {
+  animation: og-capsule-open-bottom 0.6s ease-in forwards;
+}
+
+.og-capsule-body--opening .og-capsule-shine {
+  animation: og-capsule-fade 0.3s ease-in forwards;
+}
+
+@keyframes og-capsule-open-top {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(-52px) rotate(-25deg); opacity: 0; }
+}
+
+@keyframes og-capsule-open-bottom {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(52px) rotate(20deg); opacity: 0; }
+}
+
+@keyframes og-capsule-fade {
+  to { opacity: 0; }
+}
+
+.og-capsule-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.3);
+  background: radial-gradient(circle, #fff6df 0%, rgba(240, 217, 160, 0.85) 35%, transparent 72%);
+  animation: og-burst-grow 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes og-burst-grow {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
+}
+
+.og-capsule-hint {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(240, 224, 186, 0.85);
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  animation: og-hint-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes og-hint-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.og-capsule-slot-empty {
+  width: 1px;
+  height: 1px;
+}
+
+/* ============================================================
+   思い出（ポラロイド）オーバーレイ
+   ============================================================ */
+
+.og-memory-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 24px;
+  background: rgba(5, 4, 2, 0.8);
+  backdrop-filter: blur(6px);
+  animation: og-overlay-fade-in 0.35s ease-out;
+}
+
+@keyframes og-overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.og-memory-overlay-glow {
+  position: absolute;
+  width: 60vh;
+  height: 60vh;
+  max-width: 90vw;
+  max-height: 90vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(240, 217, 160, 0.3), transparent 65%);
+  animation: og-glow-expand 0.7s ease-out;
+  pointer-events: none;
+}
+
+@keyframes og-glow-expand {
+  from { transform: scale(0.2); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.og-polaroid {
+  position: relative;
+  width: clamp(230px, 76vw, 300px);
+  background: linear-gradient(165deg, #f8f2e4, #ece0c6);
+  padding: 14px 14px 18px;
+  border-radius: 2px;
+  box-shadow:
+    0 24px 44px rgba(0, 0, 0, 0.65),
+    0 2px 0 rgba(255, 255, 255, 0.6) inset,
+    0 0 0 1px rgba(154, 116, 46, 0.15);
+  transform: rotate(-2deg);
+  animation: og-polaroid-emerge 0.6s cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+
+.og-polaroid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: radial-gradient(ellipse 90% 60% at 50% 10%, rgba(255, 226, 160, 0.18), transparent 60%);
+  pointer-events: none;
+}
+
+/* カプセルのあった位置(画面下寄り)から、小さなカードが浮かび上がって育つように見せる */
+@keyframes og-polaroid-emerge {
+  0% { transform: translateY(34vh) scale(0.22) rotate(-2deg); opacity: 0; }
+  45% { opacity: 1; }
+  75% { transform: translateY(-6px) scale(1.03) rotate(-2deg); }
+  100% { transform: translateY(0) scale(1) rotate(-2deg); opacity: 1; }
+}
+
+.og-polaroid-photo {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.og-polaroid-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.og-polaroid-comment {
+  font-family: "Cormorant Garamond", "Shippori Mincho", serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #2a2013;
+  text-align: center;
+  margin: 14px 4px 6px;
+}
+
+.og-polaroid-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(42, 32, 19, 0.55);
+}
+
+.og-polaroid-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(42, 32, 19, 0.08);
+}
+
+.og-spin-again {
+  appearance: none;
+  border: none;
+  padding: 13px 34px;
+  border-radius: 999px;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #241a0a;
+  background: linear-gradient(180deg, var(--og-gold-bright), var(--og-gold) 60%, var(--og-gold-deep));
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.og-spin-again:active {
+  transform: scale(0.96);
+}
+
+/* ============================================================
+   思い出が0件のとき（ガチャの代わりに表示）
+   ============================================================ */
+
+.og-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+}
+
+.og-empty-title {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(240, 224, 186, 0.75);
+}
+
+/* ============================================================
+   極小画面向け微調整
+   ============================================================ */
+
+@media (max-height: 720px) {
+  .og-root {
+    padding-top: max(env(safe-area-inset-top), 8px);
+    padding-bottom: max(env(safe-area-inset-bottom), 8px);
+  }
+  .og-header {
+    padding-top: 0;
+  }
+  .og-main {
+    gap: 4px;
+    padding: 0;
+  }
+  .og-machine {
+    width: min(94vw, 64vh, 420px);
+  }
+}

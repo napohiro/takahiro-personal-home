@@ -1459,114 +1459,22 @@ p {
   color: var(--text-dim);
 }
 
-.memory-gacha__embed {
-  position: relative;
+/* <OmoideGacha mode="embed" /> を包むラッパー。
+   og-machine自体はvw/vh基準で自らサイズを決めるため、ラッパーの幅は
+   横クリップが起きないよう .og-root と同じ上限(780px)に合わせ、
+   高さは og-machine と同じ min() 式に高さ比率(1.2)と余白分を足して
+   常に内容がちょうど収まるようにする(小さすぎて見切れることを防ぐ)。 */
+.memory-gacha__omoide-wrap {
   width: 100%;
-  max-width: 320px;
-  margin-top: 12px;
-}
-
-/* 背後の発光: ドーム〜ハンドル付近を中心にした縦長の淡い金〜琥珀グラデーション。
-   単色の丸ではなく多段階にすることで、光が自然に滲んで消えていくようにする。 */
-.memory-gacha__embed::before {
-  content: '';
-  position: absolute;
-  inset: -8% -14% -4%;
-  background: radial-gradient(
-    ellipse 52% 60% at 50% 38%,
-    #ffedbf4a 0%,
-    #ffcf3f30 24%,
-    #d8a34a20 48%,
-    #b8792e0e 68%,
-    transparent 85%
-  );
-  filter: blur(14px);
-  pointer-events: none;
-  z-index: 0;
-  animation: memory-gacha-glow-breathe 10s ease-in-out infinite;
-}
-
-/* 足元のごく弱い接地影。発光だけでは宙に浮いて見えるのを防ぐ */
-.memory-gacha__embed::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  bottom: 3%;
-  width: 46%;
-  height: 6%;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.32) 0%, transparent 75%);
-  filter: blur(6px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes memory-gacha-glow-breathe {
-  0%, 100% { opacity: 0.8; transform: scale(0.985); }
-  50% { opacity: 0.95; transform: scale(1.015); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .memory-gacha__embed::before {
-    animation: none;
-  }
-}
-
-.memory-gacha__embed-frame {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  border: 0;
-  background: transparent;
-  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.45));
-}
-
-@media (max-width: 639px) {
-  .memory-gacha__embed::before {
-    filter: blur(10px);
-    opacity: 0.85;
-  }
+  max-width: 780px;
+  margin: 8px auto 0;
+  height: calc(min(94vw, 70vh, 460px) * 1.2 + 64px);
 }
 
 @media (min-width: 640px) {
-  .memory-gacha__embed {
-    max-width: 440px;
+  .memory-gacha__omoide-wrap {
+    height: calc(min(58vw, 63vh, 700px) * 1.2 + 76px);
   }
-}
-
-.memory-gacha__cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--offwhite);
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.memory-gacha__cta-link--secondary {
-  margin-top: 2px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: var(--text-faint);
-}
-
-.memory-gacha__cta-link:hover {
-  color: var(--yellow);
-  transform: translateY(-2px);
-}
-
-.memory-gacha__cta-arrow {
-  font-family: var(--font-en);
-  transition: transform 0.3s ease;
-  display: inline-block;
-}
-
-.memory-gacha__cta-link:hover .memory-gacha__cta-arrow {
-  transform: translate(3px, -3px);
 }
 
 .memory-gacha__cta-caption {
