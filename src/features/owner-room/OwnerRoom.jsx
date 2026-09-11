@@ -16,7 +16,7 @@ const SECTION_LABELS = [
 
 const NOTICE_TITLE_MAX = 30
 const NOTICE_MESSAGE_MAX = 200
-const NEW_PASSWORD_MIN_LENGTH = 12
+const NEW_PASSWORD_MIN_LENGTH = 6
 
 function cloneSettings(source) {
   return {

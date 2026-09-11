@@ -8,7 +8,7 @@ import {
   updateCredentials,
 } from './_shared/passwordStore.js'
 
-const MIN_LENGTH = 12
+const MIN_LENGTH = 6
 const CONFLICT_MESSAGE = '別の場所で設定が更新されました。もう一度ログインしてやり直してください。'
 
 function fail(statusCode, message) {
