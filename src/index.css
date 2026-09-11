@@ -1459,38 +1459,80 @@ p {
   color: var(--text-dim);
 }
 
-.memory-gacha__visual {
+.memory-gacha__embed {
   position: relative;
   width: 100%;
-  max-width: 280px;
+  max-width: 320px;
   margin-top: 12px;
-  display: flex;
-  justify-content: center;
 }
 
-.memory-gacha__visual::before {
+/* 背後の発光: ドーム〜ハンドル付近を中心にした縦長の淡い金〜琥珀グラデーション。
+   単色の丸ではなく多段階にすることで、光が自然に滲んで消えていくようにする。 */
+.memory-gacha__embed::before {
   content: '';
   position: absolute;
-  top: 14%;
-  left: 50%;
-  width: 68%;
-  aspect-ratio: 1;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, #ffcf3f2e 0%, transparent 70%);
-  filter: blur(24px);
+  inset: -8% -14% -4%;
+  background: radial-gradient(
+    ellipse 52% 60% at 50% 38%,
+    #ffedbf4a 0%,
+    #ffcf3f30 24%,
+    #d8a34a20 48%,
+    #b8792e0e 68%,
+    transparent 85%
+  );
+  filter: blur(14px);
   pointer-events: none;
+  z-index: 0;
+  animation: memory-gacha-glow-breathe 10s ease-in-out infinite;
 }
 
-.memory-gacha__visual-img {
+/* 足元のごく弱い接地影。発光だけでは宙に浮いて見えるのを防ぐ */
+.memory-gacha__embed::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  width: 46%;
+  height: 6%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.32) 0%, transparent 75%);
+  filter: blur(6px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes memory-gacha-glow-breathe {
+  0%, 100% { opacity: 0.8; transform: scale(0.985); }
+  50% { opacity: 0.95; transform: scale(1.015); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .memory-gacha__embed::before {
+    animation: none;
+  }
+}
+
+.memory-gacha__embed-frame {
   position: relative;
+  z-index: 1;
+  display: block;
   width: 100%;
-  height: auto;
-  filter: drop-shadow(0 26px 28px rgba(0, 0, 0, 0.55));
+  aspect-ratio: 3 / 4;
+  border: 0;
+  background: transparent;
+  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.45));
+}
+
+@media (max-width: 639px) {
+  .memory-gacha__embed::before {
+    filter: blur(10px);
+    opacity: 0.85;
+  }
 }
 
 @media (min-width: 640px) {
-  .memory-gacha__visual {
-    max-width: 400px;
+  .memory-gacha__embed {
+    max-width: 440px;
   }
 }
 
@@ -1503,6 +1545,13 @@ p {
   font-weight: 700;
   color: var(--offwhite);
   transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.memory-gacha__cta-link--secondary {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-faint);
 }
 
 .memory-gacha__cta-link:hover {
