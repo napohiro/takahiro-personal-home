@@ -6,13 +6,13 @@
     "works": true,
     "favorites": true,
     "timeline": true,
-    "gacha": true,
+    "gacha": false,
     "family": true,
     "socialLinks": true
   },
   "notice": {
-    "enabled": false,
-    "title": "",
-    "message": ""
+    "enabled": true,
+    "title": "お知らせ",
+    "message": "来月から更新いたします。"
   }
 }
