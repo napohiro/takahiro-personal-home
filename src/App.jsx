@@ -12,24 +12,29 @@ import FamilyArchive from './components/FamilyArchive'
 import PersonalHomePossibility from './components/PersonalHomePossibility'
 import SocialLinks from './components/SocialLinks'
 import Footer from './components/Footer'
+import EmergencyNotice from './components/EmergencyNotice'
+import siteSettings from './data/siteSettings.json'
+
+const { sections } = siteSettings
 
 export default function App() {
   return (
     <>
       <Header />
+      <EmergencyNotice notice={siteSettings.notice} />
       <main>
         <Hero />
-        <Profile />
-        <MyWorld />
-        <Now />
-        <Works />
-        <Favorites />
+        {sections.profile && <Profile />}
+        {sections.myWorld && <MyWorld />}
+        {sections.now && <Now />}
+        {sections.works && <Works />}
+        {sections.favorites && <Favorites />}
         <RandomTakahiro />
-        <LifeTimeline />
-        <MemoryGacha />
-        <FamilyArchive />
+        {sections.timeline && <LifeTimeline />}
+        {sections.gacha && <MemoryGacha />}
+        {sections.family && <FamilyArchive />}
         <PersonalHomePossibility />
-        <SocialLinks />
+        {sections.socialLinks && <SocialLinks />}
       </main>
       <Footer />
     </>

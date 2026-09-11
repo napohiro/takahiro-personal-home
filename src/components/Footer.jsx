@@ -19,6 +19,9 @@ export default function Footer() {
         <PersonalCTA />
 
         <p className="footer__copyright">© TAKAHIRO — PERSONAL HOME</p>
+        <a href="/owner-room" className="footer__owner-link">
+          OWNER ROOM
+        </a>
       </div>
     </footer>
   )

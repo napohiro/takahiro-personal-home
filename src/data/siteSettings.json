@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "profile": true,
+    "myWorld": true,
+    "now": true,
+    "works": true,
+    "favorites": true,
+    "timeline": true,
+    "gacha": true,
+    "family": true,
+    "socialLinks": true
+  },
+  "notice": {
+    "enabled": false,
+    "title": "",
+    "message": ""
+  }
+}

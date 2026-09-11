@@ -1,0 +1,257 @@
+/* ============================================================
+   OWNER ROOM — 本人専用の裏側スタイル。
+   クラス名はすべて or- プレフィックスで、既存サイトCSSと衝突しない。
+   ============================================================ */
+
+.or-root {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, #ffcf3f14, transparent 60%),
+    linear-gradient(180deg, #0a0b12 0%, #05060a 100%);
+  color: #f4efdd;
+  font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+}
+
+.or-loading {
+  color: #b7b3a2;
+  font-size: 0.9rem;
+}
+
+/* --- 入室ゲート --- */
+
+.or-gate {
+  width: 100%;
+  max-width: 360px;
+  padding: 40px 28px;
+  border-radius: 20px;
+  border: 1px solid #ffcf3f30;
+  background: #14151f;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+.or-gate-eyebrow {
+  margin: 0 0 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #ffcf3f;
+}
+
+.or-gate-title {
+  margin: 0 0 28px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #f8f6f0;
+}
+
+.or-gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- 共通フォーム部品 --- */
+
+.or-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  font-size: 0.78rem;
+  color: #b7b3a2;
+}
+
+.or-field input,
+.or-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #33364360;
+  background: #0e0f16;
+  color: #f8f6f0;
+  font-size: 16px; /* iOS Safariの自動ズーム防止 */
+  font-family: inherit;
+  resize: vertical;
+}
+
+.or-field input:focus,
+.or-field textarea:focus {
+  outline: none;
+  border-color: #ffcf3f;
+}
+
+.or-error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #ff7a45;
+}
+
+.or-btn {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 24px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.or-btn--primary {
+  background: linear-gradient(180deg, #ffe6a0, #ffcf3f 55%, #d8a34a);
+  color: #241a0a;
+  box-shadow: 0 10px 24px -8px rgba(255, 207, 63, 0.5);
+}
+
+.or-btn--primary:disabled {
+  opacity: 0.55;
+  cursor: default;
+  box-shadow: none;
+}
+
+.or-btn--ghost {
+  background: transparent;
+  border: 1px solid #33364360;
+  color: #b7b3a2;
+  padding: 9px 18px;
+  font-size: 0.78rem;
+}
+
+.or-btn--wide {
+  width: 100%;
+}
+
+/* --- ダッシュボード --- */
+
+.or-dashboard {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.or-dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.or-dashboard-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #f8f6f0;
+}
+
+.or-panel {
+  padding: 20px;
+  border-radius: 18px;
+  border: 1px solid #33364360;
+  background: #14151f;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.or-panel-title {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffcf3f;
+}
+
+.or-toggle-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.or-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid #ffffff0d;
+  font-size: 0.9rem;
+  color: #f4efdd;
+}
+
+.or-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.or-toggle-row--standalone {
+  border-bottom: none;
+  padding: 4px;
+}
+
+.or-switch {
+  appearance: none;
+  border: none;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: #33364360;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.or-switch.is-on {
+  background: linear-gradient(180deg, #ffe6a0, #ffcf3f);
+}
+
+.or-switch-knob {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f8f6f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.or-switch.is-on .or-switch-knob {
+  transform: translateX(20px);
+  background: #241a0a;
+}
+
+.or-publish {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.or-publish-message {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #b7b3a2;
+  text-align: center;
+}
+
+.or-publish-message.is-error {
+  color: #ff7a45;
+}
+
+@media (min-width: 640px) {
+  .or-gate {
+    padding: 48px 40px;
+  }
+}

@@ -1,18 +1,27 @@
 import { useEffect, useState } from 'react'
 import { socialLinks } from '../data/profile'
+import siteSettings from '../data/siteSettings.json'
 
 const hasVisibleSocialLinks = socialLinks.some((link) => link.show)
+const { sections } = siteSettings
 
-const NAV_ITEMS = [
-  { href: '#world', label: 'World' },
-  { href: '#now', label: 'Now' },
-  { href: '#works', label: 'Works' },
-  { href: '#favorites', label: 'Favorites' },
-  { href: '#timeline', label: 'Timeline' },
-  { href: '#gacha', label: 'Gacha' },
-  { href: '#family', label: 'Family' },
-  ...(hasVisibleSocialLinks ? [{ href: '#outside', label: 'Outside' }] : []),
+const ALL_NAV_ITEMS = [
+  { href: '#world', label: 'World', sectionKey: 'myWorld' },
+  { href: '#now', label: 'Now', sectionKey: 'now' },
+  { href: '#works', label: 'Works', sectionKey: 'works' },
+  { href: '#favorites', label: 'Favorites', sectionKey: 'favorites' },
+  { href: '#timeline', label: 'Timeline', sectionKey: 'timeline' },
+  { href: '#gacha', label: 'Gacha', sectionKey: 'gacha' },
+  { href: '#family', label: 'Family', sectionKey: 'family' },
+  { href: '#outside', label: 'Outside', sectionKey: 'socialLinks' },
 ]
+
+// OWNER ROOMでOFFにしたセクションは、押しても何も無いリンクを
+// ナビゲーションに残さないよう取り除く。
+const NAV_ITEMS = ALL_NAV_ITEMS.filter(({ sectionKey }) => {
+  if (sectionKey === 'socialLinks') return hasVisibleSocialLinks && sections.socialLinks
+  return sections[sectionKey]
+})
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
