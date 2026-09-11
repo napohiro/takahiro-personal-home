@@ -6,7 +6,7 @@
     "works": true,
     "favorites": true,
     "timeline": true,
-    "gacha": true,
+    "gacha": false,
     "family": true,
     "socialLinks": true
   },
