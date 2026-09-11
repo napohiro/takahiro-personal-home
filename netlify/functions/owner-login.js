@@ -1,7 +1,13 @@
+import { connectLambda } from '@netlify/blobs'
 import { createSessionToken, buildSessionCookie, timingSafeStringEqual } from './_shared/session.js'
 import { getCredentials, verifyPassword } from './_shared/passwordStore.js'
 
 export async function handler(event) {
+  // Lambda互換形式(classic handler)ではNetlify Blobsの環境が自動設定されない。
+  // getStoreを呼ぶ前に必ずconnectLambdaでこのイベントから環境情報を渡す必要がある。
+  // 参照: node_modules/@netlify/blobs/README.md「Lambda compatibility mode」
+  connectLambda(event)
+
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }
@@ -43,7 +49,13 @@ export async function handler(event) {
   let credentials
   try {
     credentials = await getCredentials()
-  } catch {
+  } catch (err) {
+    // 秘密情報やスタックトレースは出さず、原因追跡に必要な最小限だけ記録する。
+    console.error('owner-login: getCredentials failed', {
+      stage: 'blobs-get-credentials',
+      errorName: err?.name,
+      errorType: err?.constructor?.name,
+    })
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },

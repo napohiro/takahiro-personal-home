@@ -1,7 +1,11 @@
+import { connectLambda } from '@netlify/blobs'
 import { isAuthenticated } from './_shared/session.js'
 import { getAuthoritativeVersion } from './_shared/passwordStore.js'
 
 export async function handler(event) {
+  // Lambda互換形式ではNetlify Blobsの環境情報を明示的に渡す必要がある。
+  connectLambda(event)
+
   if (event.httpMethod !== 'GET') {
     return { statusCode: 405, body: 'Method Not Allowed' }
   }

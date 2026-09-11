@@ -4,8 +4,13 @@
 // 保存内容: { salt, passwordHash, passwordVersion, updatedAt }
 // 平文パスワードは一切保存しない(常にscryptハッシュ化)。
 //
-// 認証情報は速度より整合性を優先するため、読み書きとも
-// consistency: "strong" (書き込み直後の読み取りが必ず最新値になる)を使う。
+// 認証情報は本来speedより整合性を優先したいが、このプロジェクトの
+// Functionsはすべて「Lambda互換モード」(classicなhandler(event)形式)であり、
+// @netlify/blobsのconnectLambda(event)が渡す環境情報には
+// uncachedEdgeURLが含まれない(node_modules/@netlify/blobs/dist/main.js の
+// connectLambda実装、および src/client.ts の getFinalRequest を確認済み)。
+// そのため consistency: "strong" を指定すると常にBlobsConsistencyErrorになり、
+// この構成では技術的に利用できない。よってeventual consistency(既定)を使う。
 // 参照: https://docs.netlify.com/build/data-and-storage/netlify-blobs/
 
 import crypto from 'node:crypto'
@@ -20,7 +25,7 @@ const KEY_LENGTH = 64
 const SALT_BYTES = 16
 
 function store() {
-  return getStore({ name: STORE_NAME, consistency: 'strong' })
+  return getStore(STORE_NAME)
 }
 
 async function hashPassword(password, saltHex) {
