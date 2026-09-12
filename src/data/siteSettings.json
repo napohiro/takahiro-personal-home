@@ -11,7 +11,7 @@
     "socialLinks": true
   },
   "notice": {
-    "enabled": false,
+    "enabled": true,
     "title": "お知らせ",
     "message": "来月から更新いたします。"
   }
