@@ -6,7 +6,10 @@ import { isSupabaseConfigured, supabase } from '../../lib/supabaseClient'
 export default function useMemberAuth() {
   // Supabase未設定であれば結果は最初から確定しているため、
   // 初期値として直接反映し、effect内での同期的なsetStateを避ける。
-  const [status, setStatus] = useState(() => (isSupabaseConfigured ? 'checking' : 'guest'))
+  const [state, setState] = useState(() => ({
+    status: isSupabaseConfigured ? 'checking' : 'guest',
+    user: null,
+  }))
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
@@ -17,12 +20,12 @@ export default function useMemberAuth() {
 
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return
-      setStatus(data.session ? 'authed' : 'guest')
+      setState({ status: data.session ? 'authed' : 'guest', user: data.session?.user ?? null })
     })
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return
-      setStatus(session ? 'authed' : 'guest')
+      setState({ status: session ? 'authed' : 'guest', user: session?.user ?? null })
     })
 
     return () => {
@@ -31,5 +34,5 @@ export default function useMemberAuth() {
     }
   }, [])
 
-  return status
+  return state
 }
