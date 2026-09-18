@@ -3,6 +3,7 @@ import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import useMemberAuth from './useMemberAuth'
 import useMemberContract from './useMemberContract'
+import useMemberApps from './useMemberApps'
 import { supabase } from '../../lib/supabaseClient'
 import {
   appShop,
@@ -17,6 +18,7 @@ import './MemberPage.css'
 export default function MemberPage() {
   const { status: authStatus, user } = useMemberAuth()
   const { status: dataStatus, member, contracts } = useMemberContract(user?.id)
+  const { status: appsStatus, product, hasAccess } = useMemberApps(user?.id)
 
   useEffect(() => {
     if (authStatus === 'guest') {
@@ -49,6 +51,11 @@ export default function MemberPage() {
       : null
   const isDataLoading = dataStatus === 'idle' || dataStatus === 'loading'
   const isDataReady = dataStatus === 'ready' && member && contract
+  const purchasePrice = product
+    ? contract?.app_shop_member_enabled
+      ? product.member_price
+      : product.public_price
+    : null
 
   return (
     <>
@@ -115,28 +122,56 @@ export default function MemberPage() {
                   <span className="eyebrow">NAPORISE MEMBER BENEFITS</span>
                   <h2 className="section-title">{appShop.title}</h2>
 
-                  {contract.app_shop_member_enabled ? (
-                    <>
-                      <p className="section-lead">{appShop.memberDescription}</p>
-                      <div className="member-products">
-                        {appShop.products.map((product) => (
-                          <div key={product.id} className="member-product-card">
-                            <p className="member-product-card__name">{product.name}</p>
-                            <p className="member-product-card__price member-product-card__price--regular">
-                              通常価格：{product.regularPrice}円
-                            </p>
-                            <p className="member-product-card__price member-product-card__price--member">
-                              契約者価格：{product.memberPrice}円
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <p className="section-lead">{appShop.guestDescription}</p>
+                  <p className="section-lead">
+                    {contract.app_shop_member_enabled ? appShop.memberDescription : appShop.guestDescription}
+                  </p>
+
+                  {appsStatus === 'loading' && <p className="member-loading">商品情報を確認しています…</p>}
+
+                  {appsStatus === 'error' && (
+                    <p className="member-data-error">APP SHOPの商品情報を確認できませんでした。</p>
                   )}
 
-                  <a href={appShop.url} className="btn btn--primary">
+                  {appsStatus === 'ready' && product && (
+                    <div className="member-product-card">
+                      <p className="member-product-card__name">{product.name}</p>
+                      {product.description && (
+                        <p className="member-product-card__desc">{product.description}</p>
+                      )}
+
+                      {hasAccess ? (
+                        <>
+                          <p className="member-product-card__status member-product-card__status--owned">
+                            購入済み
+                          </p>
+                          {product.launch_url ? (
+                            <a href={product.launch_url} className="btn btn--primary">
+                              {product.name}を開く
+                            </a>
+                          ) : (
+                            <p className="member-product-card__notice">{appShop.launchPendingNotice}</p>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <p className="member-product-card__price member-product-card__price--regular">
+                            通常価格：{product.public_price}円
+                          </p>
+                          {contract.app_shop_member_enabled && (
+                            <p className="member-product-card__price member-product-card__price--member">
+                              NAPORISE契約者価格：{product.member_price}円
+                            </p>
+                          )}
+                          <button type="button" className="btn btn--primary" disabled>
+                            {purchasePrice}円で購入する
+                          </button>
+                          <p className="member-product-card__notice">{appShop.purchaseNotice}</p>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  <a href={appShop.url} className="btn btn--ghost">
                     {appShop.ctaLabel}
                   </a>
                 </div>

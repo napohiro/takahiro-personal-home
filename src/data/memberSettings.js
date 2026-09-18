@@ -24,21 +24,16 @@ export const memberStatusNotices = {
   ended: '現在の契約は終了しています。',
 }
 
-// APP SHOP（契約者特典）。url は後日、NAPORISE共通APP SHOPページへ差し替え予定。
+// APP SHOP（契約者特典）。商品名・価格はnaporise_app_productsが正本のため、
+// ここには共通UI文言・リンクのみを置く（url は後日、NAPORISE共通APP SHOPページへ差し替え予定）。
 export const appShop = {
   title: 'APP SHOP',
   memberDescription: 'NAPORISE契約者様は、APP SHOPの商品を契約者限定価格で購入できます。',
   guestDescription: 'APP SHOPで商品をご購入いただけます。',
   url: '/#gacha',
   ctaLabel: 'APP SHOPを見る',
-  products: [
-    {
-      id: 'omoide-gacha',
-      name: '思い出ガチャ',
-      regularPrice: 980,
-      memberPrice: 480,
-    },
-  ],
+  purchaseNotice: '現在、購入機能を準備中です。',
+  launchPendingNotice: 'アプリ公開準備中です',
 }
 
 // OWNER ROOM（既存機能）への導線・説明文。owner_room_enabledの値で出し分ける。

@@ -195,6 +195,39 @@
   color: var(--offwhite);
 }
 
+.member-product-card__desc {
+  margin-top: 6px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+}
+
+.member-product-card__status {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+}
+
+.member-product-card__status--owned {
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.member-product-card__notice {
+  margin-top: 8px;
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+
+.member-product-card .btn {
+  margin-top: 14px;
+}
+
+.member-product-card .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .member-product-card__price {
   margin-top: 8px;
   font-family: var(--font-mono);
