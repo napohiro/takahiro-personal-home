@@ -1,14 +1,35 @@
+import { useEffect } from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import useReveal from '../../hooks/useReveal'
+import useMemberAuth from './useMemberAuth'
+import { supabase } from '../../lib/supabaseClient'
 import { memberInfo, appShop, ownerRoomInfo, supportInfo } from '../../data/memberSettings'
 import './MemberPage.css'
 
 export default function MemberPage() {
-  const [heroRef, heroVisible] = useReveal()
-  const [benefitsRef, benefitsVisible] = useReveal()
-  const [ownerRoomRef, ownerRoomVisible] = useReveal()
-  const [supportRef, supportVisible] = useReveal()
+  const authStatus = useMemberAuth()
+
+  useEffect(() => {
+    if (authStatus === 'guest') {
+      window.location.href = '/member/login'
+    }
+  }, [authStatus])
+
+  const handleLogout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
+    window.location.href = '/member/login'
+  }
+
+  // checking中・未ログイン(リダイレクト待ち)の間は、保護対象の内容を描画しない。
+  if (authStatus !== 'authed') {
+    return (
+      <div className="member-page member-page--loading">
+        <p className="member-loading">確認しています…</p>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -16,10 +37,15 @@ export default function MemberPage() {
       <main className="member-page">
         <section className="section member-hero">
           <div className="container">
-            <div className={`reveal ${heroVisible ? 'is-visible' : ''}`} ref={heroRef}>
-              <a href="/" className="member-back-link">
-                ← 公開サイトへ戻る
-              </a>
+            <div>
+              <div className="member-top-actions">
+                <a href="/" className="member-back-link">
+                  ← 公開サイトへ戻る
+                </a>
+                <button type="button" className="member-logout-link" onClick={handleLogout}>
+                  ログアウト
+                </button>
+              </div>
               <span className="eyebrow">NAPORISE MEMBER PAGE</span>
               <h1 className="section-title">
                 こんにちは、{memberInfo.name}
@@ -46,7 +72,7 @@ export default function MemberPage() {
 
         <section id="member-benefits" className="section section--tight">
           <div className="container">
-            <div className={`reveal ${benefitsVisible ? 'is-visible' : ''}`} ref={benefitsRef}>
+            <div>
               <span className="eyebrow">NAPORISE MEMBER BENEFITS</span>
               <h2 className="section-title">{appShop.title}</h2>
               <p className="section-lead">{appShop.description}</p>
@@ -74,10 +100,7 @@ export default function MemberPage() {
 
         <section id="member-owner-room" className="section section--tight">
           <div className="container">
-            <div
-              className={`member-owner-room-card reveal ${ownerRoomVisible ? 'is-visible' : ''}`}
-              ref={ownerRoomRef}
-            >
+            <div className="member-owner-room-card">
               <span className="eyebrow">OWNER ROOM</span>
               <p className="member-owner-room-card__badge">{ownerRoomInfo.statusBadge}</p>
               <h2 className="section-title">{ownerRoomInfo.priceLabel}</h2>
@@ -92,7 +115,7 @@ export default function MemberPage() {
 
         <section id="member-support" className="section section--tight">
           <div className="container">
-            <div className={`reveal ${supportVisible ? 'is-visible' : ''}`} ref={supportRef}>
+            <div>
               <span className="eyebrow">{supportInfo.title}</span>
               <p className="section-lead">{supportInfo.description}</p>
               <a href={supportInfo.url} className="btn btn--ghost">
