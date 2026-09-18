@@ -3,12 +3,19 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import OwnerRoom from './features/owner-room/OwnerRoom.jsx'
+import MemberPage from './features/member-page/MemberPage.jsx'
 
-// react-router等は導入せず、/owner-room だけを最小限のパス判定で切り替える。
-const isOwnerRoom = window.location.pathname.replace(/\/+$/, '') === '/owner-room'
+// react-router等は導入せず、パスだけを見た最小限の判定で切り替える。
+const pathname = window.location.pathname.replace(/\/+$/, '')
+
+function resolvePage() {
+  if (pathname === '/owner-room') return <OwnerRoom />
+  if (pathname === '/member') return <MemberPage />
+  return <App />
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    {isOwnerRoom ? <OwnerRoom /> : <App />}
+    {resolvePage()}
   </StrictMode>,
 )

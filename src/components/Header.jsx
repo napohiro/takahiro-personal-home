@@ -51,6 +51,10 @@ export default function Header() {
           ))}
         </nav>
 
+        <a href="/member" className="header__member-link">
+          MEMBER
+        </a>
+
         <button
           type="button"
           className={`header__toggle ${open ? 'is-open' : ''}`}

@@ -1,0 +1,137 @@
+/* ============================================================
+   契約者マイページ（/member）
+   既存サイトのCSS変数・.btn/.section等の共通クラスを流用し、
+   member- プレフィックスのクラスのみを追加する。
+   ============================================================ */
+
+.member-page {
+  padding-top: 96px;
+}
+
+.member-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  transition: color 0.2s ease;
+}
+
+.member-back-link:hover {
+  color: var(--yellow);
+}
+
+.member-info-card {
+  margin: 28px 0 0;
+  max-width: 420px;
+  padding: 24px 26px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+}
+
+.member-info-card__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.member-info-card__row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.member-info-card__row:first-child {
+  padding-top: 0;
+}
+
+.member-info-card__row dt {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.member-info-card__row dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--offwhite);
+  text-align: right;
+}
+
+.member-products {
+  margin: 32px 0 28px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 420px;
+}
+
+.member-product-card {
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--bg-card);
+}
+
+.member-product-card__name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--offwhite);
+}
+
+.member-product-card__price {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.member-product-card__price--regular {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.member-product-card__price--member {
+  color: var(--yellow);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.member-owner-room-card {
+  max-width: 480px;
+  padding: 32px 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid #ffcf3f40;
+  background: var(--bg-card);
+}
+
+.member-owner-room-card__badge {
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: #14151d;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.member-owner-room-card__status {
+  margin-top: 14px;
+  color: var(--text-dim);
+  font-size: 0.92rem;
+}
+
+.member-owner-room-card .btn,
+#member-benefits .btn,
+#member-support .btn {
+  margin-top: 24px;
+}
