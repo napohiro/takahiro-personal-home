@@ -2,11 +2,11 @@
   "sections": {
     "profile": true,
     "myWorld": true,
-    "now": false,
-    "works": false,
-    "favorites": false,
-    "timeline": false,
-    "gacha": false,
+    "now": true,
+    "works": true,
+    "favorites": true,
+    "timeline": true,
+    "gacha": true,
     "family": true,
     "socialLinks": true
   },
