@@ -32,7 +32,6 @@ export const appShop = {
   guestDescription: 'APP SHOPで商品をご購入いただけます。',
   url: '/#gacha',
   ctaLabel: 'APP SHOPを見る',
-  purchaseNotice: '現在、購入機能を準備中です。',
   launchPendingNotice: 'アプリ公開準備中です',
 }
 

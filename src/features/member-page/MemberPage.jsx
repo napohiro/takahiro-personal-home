@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import useMemberAuth from './useMemberAuth'
@@ -19,6 +19,7 @@ export default function MemberPage() {
   const { status: authStatus, user } = useMemberAuth()
   const { status: dataStatus, member, contracts } = useMemberContract(user?.id)
   const { status: appsStatus, product, hasAccess } = useMemberApps(user?.id)
+  const [purchase, setPurchase] = useState({ status: 'idle', message: '' })
 
   useEffect(() => {
     if (authStatus === 'guest') {
@@ -31,6 +32,69 @@ export default function MemberPage() {
       await supabase.auth.signOut()
     }
     window.location.href = '/member/login'
+  }
+
+  const handlePurchase = async () => {
+    if (!supabase || !product || purchase.status === 'processing') return
+
+    setPurchase({ status: 'processing', message: '' })
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+      if (!accessToken) {
+        setPurchase({ status: 'error', message: 'ログインが必要です。再度ログインしてください。' })
+        return
+      }
+
+      const res = await fetch('/.netlify/functions/app-shop-create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ product_slug: product.slug }),
+      })
+
+      const data = await res.json().catch(() => null)
+
+      if (!res.ok || !data) {
+        setPurchase({
+          status: 'error',
+          message: '現在購入処理を開始できませんでした。時間をおいて再度お試しください。',
+        })
+        return
+      }
+
+      if (data.status === 'checkout_ready' && data.checkout_url) {
+        window.location.href = data.checkout_url
+        return
+      }
+
+      if (data.status === 'already_owned') {
+        // 購入済み表示へ切り替えるため、最新の利用権状態を取り直す。
+        window.location.reload()
+        return
+      }
+
+      if (data.status === 'checkout_pending') {
+        setPurchase({
+          status: 'error',
+          message: '購入処理を確認しています。しばらくしてから再度お試しください。',
+        })
+        return
+      }
+
+      setPurchase({
+        status: 'error',
+        message: '現在購入処理を開始できませんでした。時間をおいて再度お試しください。',
+      })
+    } catch {
+      setPurchase({
+        status: 'error',
+        message: '通信に失敗しました。ネットワーク状態をご確認のうえ再度お試しください。',
+      })
+    }
   }
 
   // checking中・未ログイン(リダイレクト待ち)の間は、保護対象の内容を描画しない。
@@ -162,10 +226,15 @@ export default function MemberPage() {
                               NAPORISE契約者価格：{product.member_price}円
                             </p>
                           )}
-                          <button type="button" className="btn btn--primary" disabled>
-                            {purchasePrice}円で購入する
+                          <button
+                            type="button"
+                            className="btn btn--primary"
+                            onClick={handlePurchase}
+                            disabled={purchase.status === 'processing'}
+                          >
+                            {purchase.status === 'processing' ? '処理中…' : `${purchasePrice}円で購入する`}
                           </button>
-                          <p className="member-product-card__notice">{appShop.purchaseNotice}</p>
+                          {purchase.message && <p className="member-data-error">{purchase.message}</p>}
                         </>
                       )}
                     </div>

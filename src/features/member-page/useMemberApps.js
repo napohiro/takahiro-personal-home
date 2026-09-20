@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabaseClient'
 
 // 現状APP SHOPで扱う商品は思い出ガチャのみ。
 const PRODUCT_SLUG = 'omoide-gacha'
-const PRODUCT_COLUMNS = 'id, name, description, public_price, member_price, currency, launch_url'
+const PRODUCT_COLUMNS = 'id, slug, name, description, public_price, member_price, currency, launch_url'
 const ENTITLEMENT_COLUMNS = 'access_status'
 
 // naporise_app_products（公開中の商品情報）と、ログイン中ユーザーの
