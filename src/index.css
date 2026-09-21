@@ -282,27 +282,6 @@ p {
   width: 100%;
 }
 
-.header__member-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 16px;
-  border: 1px solid var(--yellow);
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--yellow);
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  white-space: nowrap;
-}
-
-.header__member-link:hover {
-  background: var(--yellow);
-  color: #14151d;
-  transform: translateY(-1px);
-}
-
 .header__toggle {
   display: inline-flex;
   flex-direction: column;
