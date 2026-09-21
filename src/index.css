@@ -335,9 +335,20 @@ p {
   color: var(--text-dim);
 }
 
+/* スマホメニュー表示中、メニュー外側のタップを受けて閉じるための透明レイヤー。
+   headerのすぐ下(z-index 99)に敷くので、メニュー自体のタップは妨げず、背後のページには届かない。 */
+.header__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
 @media (min-width: 860px) {
   .header__nav { display: flex; }
   .header__toggle { display: none; }
+  .header__backdrop { display: none; }
 }
 
 /* ==========================================================================

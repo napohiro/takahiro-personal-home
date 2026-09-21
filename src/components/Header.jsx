@@ -37,46 +37,52 @@ export default function Header() {
   const handleNavClick = () => setOpen(false)
 
   return (
-    <header className={`header ${scrolled ? 'is-scrolled' : ''}`}>
-      <div className="container header__inner">
-        <a href="#top" className="header__mark">
-          TAKAHIRO<span>'s</span>
-        </a>
+    <>
+      <header className={`header ${scrolled ? 'is-scrolled' : ''}`}>
+        <div className="container header__inner">
+          <a href="#top" className="header__mark">
+            TAKAHIRO<span>'s</span>
+          </a>
 
-        <nav className="header__nav">
-          {NAV_ITEMS.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <button
-          type="button"
-          className={`header__toggle ${open ? 'is-open' : ''}`}
-          aria-label={open ? 'メニューを閉じる' : 'メニューを開く'}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-      </div>
-
-      <div className={`header__mobile-nav ${open ? 'is-open' : ''}`}>
-        <div className="header__mobile-nav-inner">
-          <ul>
+          <nav className="header__nav">
             {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} onClick={handleNavClick}>
-                  {item.label}
-                </a>
-              </li>
+              <a key={item.href} href={item.href}>
+                {item.label}
+              </a>
             ))}
-          </ul>
+          </nav>
+
+          <button
+            type="button"
+            className={`header__toggle ${open ? 'is-open' : ''}`}
+            aria-label={open ? 'メニューを閉じる' : 'メニューを開く'}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
-      </div>
-    </header>
+
+        <div className={`header__mobile-nav ${open ? 'is-open' : ''}`}>
+          <div className="header__mobile-nav-inner">
+            <ul>
+              {NAV_ITEMS.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href} onClick={handleNavClick}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      {/* メニュー外側のタップで閉じるための透明な受け皿。
+          .header はbackdrop-filterによりfixed子孫の基準になるため、兄弟として置く。 */}
+      {open && <div className="header__backdrop" onClick={() => setOpen(false)} aria-hidden="true" />}
+    </>
   )
 }
