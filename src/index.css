@@ -220,7 +220,7 @@ p {
   right: 0;
   z-index: 100;
   padding: 18px 0;
-  transition: background 0.35s ease, border-color 0.35s ease, padding 0.35s ease;
+  transition: padding 0.35s ease;
   border-bottom: 1px solid transparent;
 }
 
