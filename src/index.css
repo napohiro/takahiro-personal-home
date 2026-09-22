@@ -1522,6 +1522,13 @@ p {
   }
 }
 
+/* 画面外(useInViewが .is-offscreen を付ける)の間だけ、ドーム内の待機アニメーションを止める。
+   画面内へ戻ると停止位置から再開する。落下・開封などの一回限りの演出は対象外。 */
+.memory-gacha__omoide-wrap.is-offscreen .og-dome-fx-capsule,
+.memory-gacha__omoide-wrap.is-offscreen .og-dome-fx-glint {
+  animation-play-state: paused;
+}
+
 .memory-gacha__cta-caption {
   font-family: var(--font-mono);
   font-size: 0.7rem;
