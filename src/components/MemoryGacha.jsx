@@ -1,4 +1,5 @@
 import useReveal from '../hooks/useReveal'
+import useInView from '../hooks/useInView'
 import OmoideGacha from '../features/omoide-gacha/components/OmoideGacha'
 import { getAllMemories } from '../features/omoide-gacha/data/memoryRepository'
 
@@ -6,6 +7,8 @@ const memories = getAllMemories()
 
 export default function MemoryGacha() {
   const [ref, visible] = useReveal()
+  // 画面外にある間は、ガチャの待機アニメーション(index.cssの .is-offscreen)を止める。
+  const omoideRef = useInView()
 
   return (
     <section id="gacha" className="section section--tight">
@@ -21,7 +24,7 @@ export default function MemoryGacha() {
             PERSONALでは、写真や思い出をただ並べるだけでなく、こんな「遊べる仕掛け」を追加することもできます。
           </p>
 
-          <div className="memory-gacha__omoide-wrap">
+          <div ref={omoideRef} className="memory-gacha__omoide-wrap">
             <OmoideGacha memories={memories} mode="embed" />
           </div>
 
