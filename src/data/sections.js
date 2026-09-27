@@ -10,20 +10,30 @@
 export const TOGGLEABLE_SECTIONS = [
   {
     key: 'myWorld',
-    label: 'MY WORLD',
+    label: 'My World',
     description:
       '『わたしの世界』の8枚のカード（AI LAB・CREATE・CAMPなど）。\nWHO IS TAKAHIRO? 内の『AIで遊ぶ』などのタグは常時表示です。',
     nav: { href: '#world', label: 'World' },
   },
   { key: 'now', label: 'NOW', nav: { href: '#now', label: 'Now' } },
-  { key: 'works', label: 'WORKS', nav: { href: '#works', label: 'Works' } },
-  { key: 'favorites', label: 'FAVORITES', nav: { href: '#favorites', label: 'Favorites' } },
-  { key: 'randomTakahiro', label: 'RANDOM TAKAHIRO', nav: null },
-  { key: 'timeline', label: 'TIMELINE', nav: { href: '#timeline', label: 'Timeline' } },
-  { key: 'gacha', label: '思い出ガチャ', nav: { href: '#gacha', label: 'Gacha' } },
-  { key: 'family', label: 'FAMILY', nav: { href: '#family', label: 'Family' } },
-  { key: 'possibility', label: 'PERSONAL HOME POSSIBILITY', nav: null },
-  { key: 'socialLinks', label: 'SOCIAL LINKS', nav: { href: '#outside', label: 'Outside' } },
+  { key: 'works', label: "Things I've Made", nav: { href: '#works', label: 'Works' } },
+  { key: 'favorites', label: 'Favorites / Interests', nav: { href: '#favorites', label: 'Favorites' } },
+  { key: 'randomTakahiro', label: 'Random TAKAHIRO', nav: null },
+  { key: 'timeline', label: 'Life Timeline', nav: { href: '#timeline', label: 'Timeline' } },
+  { key: 'gacha', label: 'Memory Gacha', nav: { href: '#gacha', label: 'Gacha' } },
+  { key: 'family', label: 'Family Archive', nav: { href: '#family', label: 'Family' } },
+  {
+    key: 'possibility',
+    label: 'Your Personal Home',
+    description: '『個人サイトって、こんなに自由。』のカード一覧。\nフッター内の同名の案内は常時表示です。',
+    nav: null,
+  },
+  {
+    key: 'socialLinks',
+    label: 'Find Me Outside',
+    description: 'SNSリンクの一覧。\n表示するSNSリンクが無い間は、ONでもサイトに出ません。',
+    nav: { href: '#outside', label: 'Outside' },
+  },
 ]
 
 export const SECTION_KEYS = TOGGLEABLE_SECTIONS.map(({ key }) => key)
