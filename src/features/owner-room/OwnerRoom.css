@@ -219,6 +219,22 @@
   border-bottom: none;
 }
 
+/* 表示名＋補足説明（補足がある項目だけ2行になる） */
+.or-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin-right: 16px;
+}
+
+.or-toggle-desc {
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: #f4efdd99;
+  white-space: pre-line;
+}
+
 .or-toggle-row--standalone {
   border-bottom: none;
   padding: 4px;

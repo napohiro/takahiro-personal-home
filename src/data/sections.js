@@ -4,10 +4,17 @@
 //   key   : siteSettings.json の sections のキー
 //   label : OWNER ROOM での表示名
 //   nav   : Header / モバイルメニューのリンク（無いセクションは null）
+//   description : OWNER ROOM で表示名の下に出す補足（任意）
 //
 // プロフィール（WHO IS TAKAHIRO?）は常時公開のため、意図的にここへ含めない。
 export const TOGGLEABLE_SECTIONS = [
-  { key: 'myWorld', label: 'MY WORLD', nav: { href: '#world', label: 'World' } },
+  {
+    key: 'myWorld',
+    label: 'MY WORLD',
+    description:
+      '『わたしの世界』の8枚のカード（AI LAB・CREATE・CAMPなど）。\nWHO IS TAKAHIRO? 内の『AIで遊ぶ』などのタグは常時表示です。',
+    nav: { href: '#world', label: 'World' },
+  },
   { key: 'now', label: 'NOW', nav: { href: '#now', label: 'Now' } },
   { key: 'works', label: 'WORKS', nav: { href: '#works', label: 'Works' } },
   { key: 'favorites', label: 'FAVORITES', nav: { href: '#favorites', label: 'Favorites' } },

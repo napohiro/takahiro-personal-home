@@ -326,15 +326,23 @@ export default function OwnerRoom() {
             </p>
           )}
           <ul className="or-toggle-list">
-            {TOGGLEABLE_SECTIONS.map(({ key, label }) => (
+            {TOGGLEABLE_SECTIONS.map(({ key, label, description }) => (
               <li key={key} className="or-toggle-row">
-                <span>{label}</span>
+                <span className="or-toggle-text">
+                  <span>{label}</span>
+                  {description && (
+                    <span id={`or-desc-${key}`} className="or-toggle-desc">
+                      {description}
+                    </span>
+                  )}
+                </span>
                 <button
                   type="button"
                   className={`or-switch ${settings.sections[key] ? 'is-on' : ''}`}
                   role="switch"
                   aria-checked={settings.sections[key]}
                   aria-label={label}
+                  aria-describedby={description ? `or-desc-${key}` : undefined}
                   disabled={settingsStatus === 'loading'}
                   onClick={() => toggleSection(key)}
                 >
