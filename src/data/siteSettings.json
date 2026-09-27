@@ -1,15 +1,15 @@
 {
   "sections": {
-    "myWorld": true,
+    "myWorld": false,
     "now": false,
-    "works": true,
-    "favorites": true,
-    "randomTakahiro": true,
-    "timeline": true,
-    "gacha": true,
-    "family": true,
-    "possibility": true,
-    "socialLinks": true
+    "works": false,
+    "favorites": false,
+    "randomTakahiro": false,
+    "timeline": false,
+    "gacha": false,
+    "family": false,
+    "possibility": false,
+    "socialLinks": false
   },
   "notice": {
     "enabled": true,
