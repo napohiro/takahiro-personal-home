@@ -1,6 +1,6 @@
 {
   "sections": {
-    "profile": false,
+    "profile": true,
     "myWorld": true,
     "now": true,
     "works": true,
