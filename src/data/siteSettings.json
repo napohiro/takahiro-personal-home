@@ -1,7 +1,7 @@
 {
   "sections": {
-    "myWorld": false,
-    "now": false,
+    "myWorld": true,
+    "now": true,
     "works": true,
     "favorites": true,
     "randomTakahiro": true,
