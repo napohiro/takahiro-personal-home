@@ -1,6 +1,6 @@
 {
   "sections": {
-    "myWorld": true,
+    "myWorld": false,
     "now": false,
     "works": true,
     "favorites": true,
