@@ -1,4 +1,6 @@
+import { useId, useState } from 'react'
 import useReveal from '../hooks/useReveal'
+import ExpandToggle from './ExpandToggle'
 import { LockIcon } from './icons'
 
 // 現段階では機能紹介のためのモックデータのみ。実在の家族の写真・情報は含めない。
@@ -27,6 +29,8 @@ const FAMILY_TREE_CHILDREN = [
 
 export default function FamilyArchive() {
   const [ref, visible] = useReveal()
+  const [detailsOpen, setDetailsOpen] = useState(false)
+  const detailsId = useId()
 
   return (
     <section id="family" className="section">
@@ -45,40 +49,50 @@ export default function FamilyArchive() {
             <span>PASSWORD PROTECTED（サンプル表示）</span>
           </div>
 
-          <div className="family-archive__grid">
-            {FAMILY_FEATURES.map((label, i) => (
-              <div
-                key={label}
-                className={`family-archive__card reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
-              >
-                <span className="family-archive__card-index">{String(i + 1).padStart(2, '0')}</span>
-                <span className="family-archive__card-label">{label}</span>
-              </div>
-            ))}
-          </div>
+          {/* 機能一覧・家系図サンプルは VIEW DETAILS で開く詳細部分 */}
+          <div id={detailsId} className="family-archive__details more-extra" hidden={!detailsOpen}>
+            <div className="family-archive__grid">
+              {FAMILY_FEATURES.map((label, i) => (
+                <div
+                  key={label}
+                  className={`family-archive__card reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
+                >
+                  <span className="family-archive__card-index">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="family-archive__card-label">{label}</span>
+                </div>
+              ))}
+            </div>
 
-          <div className="family-archive__tree">
-            <p className="family-archive__tree-label">家系図サンプル（架空の人物です）</p>
-            <div className="family-tree">
-              <div className="family-tree__row">
-                {FAMILY_TREE_PARENTS.map((p) => (
-                  <div key={p.id} className="family-tree__node">
-                    <span className="family-tree__node-role">{p.role}</span>
-                    <span className="family-tree__node-label">{p.label}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="family-tree__connector" aria-hidden="true" />
-              <div className="family-tree__row">
-                {FAMILY_TREE_CHILDREN.map((c) => (
-                  <div key={c.id} className="family-tree__node family-tree__node--child">
-                    <span className="family-tree__node-role">{c.role}</span>
-                    <span className="family-tree__node-label">{c.label}</span>
-                  </div>
-                ))}
+            <div className="family-archive__tree">
+              <p className="family-archive__tree-label">家系図サンプル（架空の人物です）</p>
+              <div className="family-tree">
+                <div className="family-tree__row">
+                  {FAMILY_TREE_PARENTS.map((p) => (
+                    <div key={p.id} className="family-tree__node">
+                      <span className="family-tree__node-role">{p.role}</span>
+                      <span className="family-tree__node-label">{p.label}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="family-tree__connector" aria-hidden="true" />
+                <div className="family-tree__row">
+                  {FAMILY_TREE_CHILDREN.map((c) => (
+                    <div key={c.id} className="family-tree__node family-tree__node--child">
+                      <span className="family-tree__node-role">{c.role}</span>
+                      <span className="family-tree__node-label">{c.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+
+          <ExpandToggle
+            expanded={detailsOpen}
+            onToggle={setDetailsOpen}
+            controls={detailsId}
+            label="VIEW DETAILS"
+          />
 
           <p className="family-archive__note">
             ※これは機能紹介のためのサンプル表示です。実際のパスワード保護は行っていません。本格的に家族限定ページを作る場合は、Supabase

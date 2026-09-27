@@ -1,8 +1,11 @@
 import useReveal from '../hooks/useReveal'
+import useExpandable from '../hooks/useExpandable'
+import ExpandToggle from './ExpandToggle'
 import { possibilities } from '../data/possibilities'
 
 export default function PersonalHomePossibility() {
   const [ref, visible] = useReveal()
+  const more = useExpandable({ total: possibilities.length, desktop: 8, mobile: 6 })
 
   return (
     <section id="possibility" className="section">
@@ -15,16 +18,27 @@ export default function PersonalHomePossibility() {
           </p>
         </div>
 
-        <div className="possibility-grid">
+        <div id={more.controlsId} className="possibility-grid">
           {possibilities.map((item, i) => (
             <div
               key={item.label}
-              className={`possibility-card possibility-card--${item.accent} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
+              hidden={more.isHidden(i)}
+              className={`possibility-card possibility-card--${item.accent} ${more.isExtra(i) ? 'more-extra' : ''} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
             >
               {item.label}
             </div>
           ))}
         </div>
+
+        {more.hasMore && (
+          <ExpandToggle
+            expanded={more.expanded}
+            onToggle={more.setExpanded}
+            controls={more.controlsId}
+            label="SHOW ALL"
+            count={more.hiddenCount}
+          />
+        )}
       </div>
     </section>
   )

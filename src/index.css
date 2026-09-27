@@ -209,6 +209,114 @@ p {
   transform: translateY(-2px);
 }
 
+/* ---------- Expand toggle（段階表示：VIEW MORE ⇄ CLOSE） ---------- */
+
+/* 折り畳み中の項目。DOMには残したまま非表示にする（各項目の display 指定より優先） */
+.more-extra[hidden] {
+  display: none !important;
+}
+
+/* 表示された瞬間に軽くフェードイン（display:none から戻るたびに再生される） */
+.more-extra {
+  animation: more-extra-in 0.28s ease-out;
+}
+
+@keyframes more-extra-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.more-toggle-wrap {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+.more-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 8px 18px;
+  border: 1px solid #ffffff22;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.more-toggle::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--yellow);
+}
+
+.more-toggle:hover {
+  color: var(--yellow);
+  border-color: #ffcf3f99;
+}
+
+.more-toggle:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+.more-toggle__count {
+  color: var(--yellow);
+  letter-spacing: 0.06em;
+}
+
+/* NOWカード（アイボリー地）の中で使うインク色版 */
+.more-toggle-wrap--ink {
+  margin-top: 18px;
+  justify-content: flex-start;
+}
+
+.more-toggle--ink {
+  min-height: 34px;
+  padding: 6px 14px;
+  border-color: #7a6a2f40;
+  color: #7a6a2f;
+}
+
+.more-toggle--ink::before {
+  background: var(--orange);
+}
+
+.more-toggle--ink:focus-visible {
+  outline-color: var(--orange);
+}
+
+.more-toggle--ink:hover {
+  color: #201d15;
+  border-color: var(--orange);
+}
+
+.more-toggle--ink .more-toggle__count {
+  color: var(--orange);
+}
+
+/* 年表は最後のカードの下に余白があるので、ボタンとの間を詰める */
+.life-timeline + .more-toggle-wrap {
+  margin-top: 8px;
+}
+
+/* Family Archive は左揃えの構成に合わせる */
+.family-archive .more-toggle-wrap {
+  margin-top: 24px;
+  justify-content: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .more-extra { animation: none; }
+  .more-toggle { transition: none; }
+}
+
 /* ==========================================================================
    Header
    ========================================================================== */

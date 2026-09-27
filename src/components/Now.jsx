@@ -1,8 +1,11 @@
 import useReveal from '../hooks/useReveal'
+import useExpandable from '../hooks/useExpandable'
+import ExpandToggle from './ExpandToggle'
 import { nowItems, nowNote, nowUpdatedAt } from '../data/profile'
 
 export default function Now() {
   const [ref, visible] = useReveal()
+  const more = useExpandable({ total: nowItems.length, desktop: 4, mobile: 3 })
 
   return (
     <section id="now" className="section section--tight now-section">
@@ -17,13 +20,27 @@ export default function Now() {
 
           <div className="now-card">
             <p className="now-card__title">TAKAHIRO / NOW LIST</p>
-            <ul className="now-card__list">
-              {nowItems.map((item) => (
-                <li key={item} className="now-card__item">
+            <ul id={more.controlsId} className="now-card__list">
+              {nowItems.map((item, i) => (
+                <li
+                  key={item}
+                  hidden={more.isHidden(i)}
+                  className={`now-card__item ${more.isExtra(i) ? 'more-extra' : ''}`}
+                >
                   {item}
                 </li>
               ))}
             </ul>
+            {more.hasMore && (
+              <ExpandToggle
+                expanded={more.expanded}
+                onToggle={more.setExpanded}
+                controls={more.controlsId}
+                label="VIEW MORE"
+                count={more.hiddenCount}
+                variant="ink"
+              />
+            )}
             <p className="now-card__meta">Last updated: {nowUpdatedAt}</p>
           </div>
         </div>

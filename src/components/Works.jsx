@@ -1,8 +1,11 @@
 import useReveal from '../hooks/useReveal'
+import useExpandable from '../hooks/useExpandable'
+import ExpandToggle from './ExpandToggle'
 import { works } from '../data/works'
 
 export default function Works() {
   const [ref, visible] = useReveal()
+  const more = useExpandable({ total: works.length, desktop: 6, mobile: 3 })
 
   return (
     <section id="works" className="section">
@@ -13,7 +16,7 @@ export default function Works() {
           <p className="section-lead">デジタルも、手仕事も。面白そうなら、まず作ってみる。</p>
         </div>
 
-        <div className="works-grid">
+        <div id={more.controlsId} className="works-grid">
           {works.map((work, i) => {
             const Tag = work.url ? 'a' : 'div'
             const linkProps = work.url ? { href: work.url, target: '_blank', rel: 'noopener noreferrer' } : {}
@@ -22,7 +25,8 @@ export default function Works() {
               <Tag
                 key={work.id}
                 {...linkProps}
-                className={`work-card work-card--${work.accent} ${work.url ? '' : 'work-card--static'} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
+                hidden={more.isHidden(i)}
+                className={`work-card work-card--${work.accent} ${work.url ? '' : 'work-card--static'} ${more.isExtra(i) ? 'more-extra' : ''} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
               >
                 <div className="work-card__thumb">
                   {work.image ? (
@@ -50,6 +54,16 @@ export default function Works() {
             )
           })}
         </div>
+
+        {more.hasMore && (
+          <ExpandToggle
+            expanded={more.expanded}
+            onToggle={more.setExpanded}
+            controls={more.controlsId}
+            label="SHOW ALL"
+            count={more.hiddenCount}
+          />
+        )}
 
         <p className="works-note">思いついたら、また増やしていきます。</p>
       </div>

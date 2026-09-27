@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import useReveal from '../hooks/useReveal'
+import useExpandable from '../hooks/useExpandable'
+import ExpandToggle from './ExpandToggle'
 import { favorites } from '../data/favorites'
 
 const NOTE_HALF_WIDTH = 100
@@ -10,6 +12,7 @@ export default function Favorites() {
   const [openId, setOpenId] = useState(null)
   const [shifts, setShifts] = useState({})
   const cloudRef = useRef(null)
+  const more = useExpandable({ total: favorites.length, desktop: 10, mobile: 8 })
 
   const recalcShifts = useCallback(() => {
     const cloud = cloudRef.current
@@ -39,6 +42,11 @@ export default function Favorites() {
     return () => window.removeEventListener('resize', recalcShifts)
   }, [recalcShifts])
 
+  // 開閉で表示されるチップが変わると位置も変わるため、吹き出しのはみ出し補正を測り直す。
+  useEffect(() => {
+    recalcShifts()
+  }, [more.expanded, more.hiddenCount, recalcShifts])
+
   useEffect(() => {
     if (openId === null) return undefined
 
@@ -61,7 +69,7 @@ export default function Favorites() {
           <p className="section-lead">この話をさせたら止まらない、というものたち。（タップ／ホバーで一言）</p>
         </div>
 
-        <div className="favorites-cloud" ref={cloudRef}>
+        <div id={more.controlsId} className="favorites-cloud" ref={cloudRef}>
           {favorites.map((fav, i) => {
             const isOpen = openId === fav.id
 
@@ -70,8 +78,9 @@ export default function Favorites() {
                 type="button"
                 key={fav.id}
                 data-fav-id={fav.id}
+                hidden={more.isHidden(i)}
                 style={{ '--note-shift': `${shifts[fav.id] || 0}px` }}
-                className={`favorite-chip favorite-chip--${fav.size} ${isOpen ? 'is-open' : ''} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
+                className={`favorite-chip favorite-chip--${fav.size} ${isOpen ? 'is-open' : ''} ${more.isExtra(i) ? 'more-extra' : ''} reveal reveal-delay-${(i % 3) + 1} ${visible ? 'is-visible' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation()
                   setOpenId(isOpen ? null : fav.id)
@@ -83,6 +92,16 @@ export default function Favorites() {
             )
           })}
         </div>
+
+        {more.hasMore && (
+          <ExpandToggle
+            expanded={more.expanded}
+            onToggle={more.setExpanded}
+            controls={more.controlsId}
+            label="VIEW MORE"
+            count={more.hiddenCount}
+          />
+        )}
       </div>
     </section>
   )

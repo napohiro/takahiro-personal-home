@@ -1,16 +1,19 @@
 import useReveal from '../hooks/useReveal'
+import useExpandable from '../hooks/useExpandable'
+import ExpandToggle from './ExpandToggle'
 import { lifeTimeline } from '../data/timeline'
 
 const ACCENTS = ['blue', 'orange', 'yellow']
 
-function TimelineNode({ item, index }) {
+function TimelineNode({ item, index, extra, hidden }) {
   const [ref, visible] = useReveal(0.35)
   const accent = ACCENTS[index % ACCENTS.length]
 
   return (
     <li
       ref={ref}
-      className={`life-timeline__item life-timeline__item--${accent} ${visible ? 'is-visible' : ''}`}
+      hidden={hidden}
+      className={`life-timeline__item life-timeline__item--${accent} ${extra ? 'more-extra' : ''} ${visible ? 'is-visible' : ''}`}
     >
       <span className="life-timeline__dot" />
       <div className="life-timeline__card">
@@ -32,6 +35,7 @@ function TimelineNode({ item, index }) {
 
 export default function LifeTimeline() {
   const [headRef, headVisible] = useReveal()
+  const more = useExpandable({ total: lifeTimeline.length, desktop: 5, mobile: 3 })
 
   return (
     <section id="timeline" className="section">
@@ -42,11 +46,27 @@ export default function LifeTimeline() {
           <p className="section-lead">人生をざっと眺めるための年表。</p>
         </div>
 
-        <ul className="life-timeline">
+        <ul id={more.controlsId} className="life-timeline">
           {lifeTimeline.map((item, i) => (
-            <TimelineNode key={item.id} item={item} index={i} />
+            <TimelineNode
+              key={item.id}
+              item={item}
+              index={i}
+              extra={more.isExtra(i)}
+              hidden={more.isHidden(i)}
+            />
           ))}
         </ul>
+
+        {more.hasMore && (
+          <ExpandToggle
+            expanded={more.expanded}
+            onToggle={more.setExpanded}
+            controls={more.controlsId}
+            label="CONTINUE"
+            count={more.hiddenCount}
+          />
+        )}
 
         <p className="life-timeline-note">LIFE IS STILL IN BETA.</p>
       </div>
