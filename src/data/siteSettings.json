@@ -2,13 +2,13 @@
   "sections": {
     "myWorld": true,
     "now": true,
-    "works": false,
-    "favorites": false,
-    "randomTakahiro": false,
-    "timeline": false,
-    "gacha": false,
-    "family": false,
-    "possibility": false,
+    "works": true,
+    "favorites": true,
+    "randomTakahiro": true,
+    "timeline": true,
+    "gacha": true,
+    "family": true,
+    "possibility": true,
     "socialLinks": true
   },
   "notice": {
