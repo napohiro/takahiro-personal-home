@@ -14,8 +14,9 @@ import SocialLinks from './components/SocialLinks'
 import Footer from './components/Footer'
 import EmergencyNotice from './components/EmergencyNotice'
 import siteSettings from './data/siteSettings.json'
+import { isSectionVisible } from './data/sections'
 
-const { sections } = siteSettings
+const show = (key) => isSectionVisible(siteSettings.sections, key)
 
 export default function App() {
   return (
@@ -24,17 +25,18 @@ export default function App() {
       <EmergencyNotice notice={siteSettings.notice} />
       <main>
         <Hero />
-        {sections.profile && <Profile />}
-        {sections.myWorld && <MyWorld />}
-        {sections.now && <Now />}
-        {sections.works && <Works />}
-        {sections.favorites && <Favorites />}
-        <RandomTakahiro />
-        {sections.timeline && <LifeTimeline />}
-        {sections.gacha && <MemoryGacha />}
-        {sections.family && <FamilyArchive />}
-        <PersonalHomePossibility />
-        {sections.socialLinks && <SocialLinks />}
+        {/* プロフィールは常時公開（OWNER ROOMの公開設定の対象外） */}
+        <Profile />
+        {show('myWorld') && <MyWorld />}
+        {show('now') && <Now />}
+        {show('works') && <Works />}
+        {show('favorites') && <Favorites />}
+        {show('randomTakahiro') && <RandomTakahiro />}
+        {show('timeline') && <LifeTimeline />}
+        {show('gacha') && <MemoryGacha />}
+        {show('family') && <FamilyArchive />}
+        {show('possibility') && <PersonalHomePossibility />}
+        {show('socialLinks') && <SocialLinks />}
       </main>
       <Footer />
     </>

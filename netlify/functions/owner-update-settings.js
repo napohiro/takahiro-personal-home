@@ -1,27 +1,14 @@
 import { connectLambda } from '@netlify/blobs'
 import { isAuthenticated } from './_shared/session.js'
 import { getAuthoritativeVersion } from './_shared/passwordStore.js'
-
-// リポジトリ情報は秘密ではないため、環境変数ではなくサーバー側定数として固定する。
-const GITHUB_OWNER = 'napohiro'
-const GITHUB_REPO = 'takahiro-personal-home'
-const GITHUB_BRANCH = 'main'
-const SETTINGS_PATH = 'src/data/siteSettings.json'
-
-const SECTION_KEYS = [
-  'profile',
-  'myWorld',
-  'now',
-  'works',
-  'favorites',
-  'timeline',
-  'gacha',
-  'family',
-  'socialLinks',
-]
-
-const NOTICE_TITLE_MAX = 30
-const NOTICE_MESSAGE_MAX = 200
+import {
+  GITHUB_BRANCH,
+  SETTINGS_API_URL,
+  applyChanges,
+  fetchCurrentSettings,
+  githubHeaders,
+  sanitizeChanges,
+} from './_shared/settings.js'
 
 function badRequest(message) {
   return {
@@ -29,29 +16,6 @@ function badRequest(message) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ok: false, error: message }),
   }
-}
-
-// クライアントから届いた値をそのまま信用せず、既知のキーだけを
-// 決まった型で組み直す（未知キーの混入・型崩れを防ぐ）。
-function sanitizeSettings(input) {
-  if (!input || typeof input !== 'object') return null
-
-  const sections = {}
-  for (const key of SECTION_KEYS) {
-    sections[key] = Boolean(input.sections?.[key])
-  }
-
-  const noticeInput = input.notice || {}
-  const title = typeof noticeInput.title === 'string' ? noticeInput.title.slice(0, NOTICE_TITLE_MAX) : ''
-  const message = typeof noticeInput.message === 'string' ? noticeInput.message.slice(0, NOTICE_MESSAGE_MAX) : ''
-
-  const notice = {
-    enabled: Boolean(noticeInput.enabled),
-    title,
-    message,
-  }
-
-  return { sections, notice }
 }
 
 export async function handler(event) {
@@ -96,43 +60,48 @@ export async function handler(event) {
     return badRequest('リクエストが不正です。')
   }
 
-  const settings = sanitizeSettings(body.settings)
-  if (!settings) {
-    return badRequest('設定データが不正です。')
+  // 設定全体ではなく「変更した項目だけ」を受け取る。
+  // 公開反映前の古い画面から保存しても、他の項目を古い値で上書きしないため。
+  const changes = sanitizeChanges(body.changes)
+  if (!changes) {
+    return badRequest('変更内容が不正です。ページを再読み込みしてからお試しください。')
   }
 
-  const apiBase = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${SETTINGS_PATH}`
-  const githubHeaders = {
-    Authorization: `Bearer ${githubToken}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'User-Agent': 'takahiro-personal-home-owner-room',
+  let current
+  try {
+    current = await fetchCurrentSettings(githubToken)
+  } catch {
+    return {
+      statusCode: 502,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ok: false, error: '公開できませんでした。時間をおいて再度お試しください。' }),
+    }
   }
 
   try {
-    const currentRes = await fetch(`${apiBase}?ref=${GITHUB_BRANCH}`, { headers: githubHeaders })
-    if (!currentRes.ok) {
-      return {
-        statusCode: 502,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ok: false, error: '公開できませんでした。時間をおいて再度お試しください。' }),
-      }
-    }
-    const currentFile = await currentRes.json()
-
+    const settings = applyChanges(current.settings, changes)
     const newContent = JSON.stringify(settings, null, 2) + '\n'
     const contentBase64 = Buffer.from(newContent, 'utf8').toString('base64')
 
-    const updateRes = await fetch(apiBase, {
+    const updateRes = await fetch(SETTINGS_API_URL, {
       method: 'PUT',
-      headers: { ...githubHeaders, 'Content-Type': 'application/json' },
+      headers: { ...githubHeaders(githubToken), 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message: 'chore: OWNER ROOMからサイト設定を更新',
         content: contentBase64,
-        sha: currentFile.sha,
+        sha: current.sha,
         branch: GITHUB_BRANCH,
       }),
     })
+
+    // 読み込み後に別の保存が先に入った場合（sha不一致）は上書きせず、やり直してもらう。
+    if (updateRes.status === 409) {
+      return {
+        statusCode: 409,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ok: false, error: '別の保存と重なりました。もう一度「変更を公開」を押してください。' }),
+      }
+    }
 
     if (!updateRes.ok) {
       return {
@@ -145,7 +114,7 @@ export async function handler(event) {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ok: true }),
+      body: JSON.stringify({ ok: true, settings }),
     }
   } catch {
     return {

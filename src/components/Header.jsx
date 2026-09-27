@@ -1,27 +1,18 @@
 import { useEffect, useState } from 'react'
 import { socialLinks } from '../data/profile'
 import siteSettings from '../data/siteSettings.json'
+import { TOGGLEABLE_SECTIONS, isSectionVisible } from '../data/sections'
 
 const hasVisibleSocialLinks = socialLinks.some((link) => link.show)
-const { sections } = siteSettings
-
-const ALL_NAV_ITEMS = [
-  { href: '#world', label: 'World', sectionKey: 'myWorld' },
-  { href: '#now', label: 'Now', sectionKey: 'now' },
-  { href: '#works', label: 'Works', sectionKey: 'works' },
-  { href: '#favorites', label: 'Favorites', sectionKey: 'favorites' },
-  { href: '#timeline', label: 'Timeline', sectionKey: 'timeline' },
-  { href: '#gacha', label: 'Gacha', sectionKey: 'gacha' },
-  { href: '#family', label: 'Family', sectionKey: 'family' },
-  { href: '#outside', label: 'Outside', sectionKey: 'socialLinks' },
-]
 
 // OWNER ROOMでOFFにしたセクションは、押しても何も無いリンクを
 // ナビゲーションに残さないよう取り除く。
-const NAV_ITEMS = ALL_NAV_ITEMS.filter(({ sectionKey }) => {
-  if (sectionKey === 'socialLinks') return hasVisibleSocialLinks && sections.socialLinks
-  return sections[sectionKey]
-})
+const NAV_ITEMS = TOGGLEABLE_SECTIONS.filter(({ key, nav }) => {
+  if (!nav || !isSectionVisible(siteSettings.sections, key)) return false
+  // SOCIAL LINKS は表示するリンクが1件も無いとセクション自体が出ないため、リンクも出さない。
+  if (key === 'socialLinks') return hasVisibleSocialLinks
+  return true
+}).map(({ nav }) => nav)
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)

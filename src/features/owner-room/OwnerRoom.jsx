@@ -1,28 +1,40 @@
 import { useEffect, useState } from 'react'
 import siteSettings from '../../data/siteSettings.json'
+import { SECTION_KEYS, TOGGLEABLE_SECTIONS, isSectionVisible } from '../../data/sections'
 import './OwnerRoom.css'
 
-const SECTION_LABELS = [
-  { key: 'profile', label: 'プロフィール' },
-  { key: 'myWorld', label: 'MY WORLD' },
-  { key: 'now', label: 'NOW' },
-  { key: 'works', label: 'WORKS' },
-  { key: 'favorites', label: 'FAVORITES' },
-  { key: 'timeline', label: 'TIMELINE' },
-  { key: 'gacha', label: '思い出ガチャ' },
-  { key: 'family', label: 'FAMILY' },
-  { key: 'socialLinks', label: 'SOCIAL LINKS' },
-]
+// プロフィールは常時公開のため、スイッチを出さない（TOGGLEABLE_SECTIONS に含めていない）。
 
 const NOTICE_TITLE_MAX = 30
 const NOTICE_MESSAGE_MAX = 200
 const NEW_PASSWORD_MIN_LENGTH = 6
+const NOTICE_FIELDS = ['enabled', 'title', 'message']
 
+// 公開設定の対象キーだけを取り出し、キーが無いものは「公開」として揃える。
 function cloneSettings(source) {
+  const sections = {}
+  for (const key of SECTION_KEYS) {
+    sections[key] = isSectionVisible(source.sections, key)
+  }
   return {
-    sections: { ...source.sections },
+    sections,
     notice: { ...source.notice },
   }
+}
+
+// 読み込んだ時点の値(base)から変えた項目だけを取り出す。
+// 保存時は設定全体ではなくこの差分だけを送り、他の項目を古い値で上書きしない。
+function diffSettings(base, next) {
+  const sections = {}
+  for (const key of SECTION_KEYS) {
+    if (next.sections[key] !== base.sections[key]) sections[key] = next.sections[key]
+  }
+  const notice = {}
+  for (const field of NOTICE_FIELDS) {
+    if (next.notice[field] !== base.notice[field]) notice[field] = next.notice[field]
+  }
+  const hasChanges = Object.keys(sections).length > 0 || Object.keys(notice).length > 0
+  return hasChanges ? { sections, notice } : null
 }
 
 export default function OwnerRoom() {
@@ -32,6 +44,8 @@ export default function OwnerRoom() {
   const [loggingIn, setLoggingIn] = useState(false)
 
   const [settings, setSettings] = useState(() => cloneSettings(siteSettings))
+  const [baseline, setBaseline] = useState(() => cloneSettings(siteSettings))
+  const [settingsStatus, setSettingsStatus] = useState('loading') // loading | ready | stale
   const [publishState, setPublishState] = useState('idle') // idle | publishing | done | error
   const [publishMessage, setPublishMessage] = useState('')
 
@@ -67,6 +81,34 @@ export default function OwnerRoom() {
     }
   }, [])
 
+  // ログイン後は、公開中サイトに埋め込まれた設定ではなく GitHub 上の最新値から始める。
+  // （保存直後は Netlify の再ビルドが終わるまで、埋め込み値が古いままのため）
+  useEffect(() => {
+    if (authState !== 'in') return undefined
+
+    let cancelled = false
+    fetch('/.netlify/functions/owner-get-settings', { cache: 'no-store' })
+      .then(async (res) => {
+        const data = await res.json()
+        if (cancelled) return
+        if (res.ok && data.ok) {
+          setSettings(cloneSettings(data.settings))
+          setBaseline(cloneSettings(data.settings))
+          setSettingsStatus('ready')
+        } else if (res.status === 401) {
+          setAuthState('guest')
+        } else {
+          setSettingsStatus('stale')
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setSettingsStatus('stale')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [authState])
+
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoginError('')
@@ -99,6 +141,8 @@ export default function OwnerRoom() {
     }
     setAuthState('guest')
     setSettings(cloneSettings(siteSettings))
+    setBaseline(cloneSettings(siteSettings))
+    setSettingsStatus('loading')
     setPublishState('idle')
     setPublishMessage('')
   }
@@ -151,6 +195,8 @@ export default function OwnerRoom() {
         setTimeout(() => {
           setAuthState('guest')
           setSettings(cloneSettings(siteSettings))
+          setBaseline(cloneSettings(siteSettings))
+          setSettingsStatus('loading')
         }, 2000)
       } else {
         setPasswordState('error')
@@ -178,16 +224,28 @@ export default function OwnerRoom() {
 
   const handlePublish = async () => {
     if (publishState === 'publishing') return
+
+    const changes = diffSettings(baseline, settings)
+    if (!changes) {
+      setPublishState('done')
+      setPublishMessage('変更はありません。')
+      return
+    }
+
     setPublishState('publishing')
     setPublishMessage('')
     try {
       const res = await fetch('/.netlify/functions/owner-update-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ settings }),
+        body: JSON.stringify({ changes }),
       })
       const data = await res.json()
       if (res.ok && data.ok) {
+        // 保存後の最新値（他の項目も含む）を次の比較の基準にする。
+        const saved = cloneSettings(data.settings)
+        setSettings(saved)
+        setBaseline(saved)
         setPublishState('done')
         setPublishMessage('変更を受け付けました。数十秒〜数分で公開サイトへ反映されます。')
       } else if (res.status === 401) {
@@ -261,8 +319,14 @@ export default function OwnerRoom() {
 
         <section className="or-panel">
           <h2 className="or-panel-title">セクション表示</h2>
+          <p className="or-panel-caption">プロフィールは常に公開されます。</p>
+          {settingsStatus === 'stale' && (
+            <p className="or-publish-message is-error">
+              最新の設定を読み込めませんでした。表示は公開中サイト時点の値です。保存時は変更した項目だけが反映されます。
+            </p>
+          )}
           <ul className="or-toggle-list">
-            {SECTION_LABELS.map(({ key, label }) => (
+            {TOGGLEABLE_SECTIONS.map(({ key, label }) => (
               <li key={key} className="or-toggle-row">
                 <span>{label}</span>
                 <button
@@ -270,6 +334,8 @@ export default function OwnerRoom() {
                   className={`or-switch ${settings.sections[key] ? 'is-on' : ''}`}
                   role="switch"
                   aria-checked={settings.sections[key]}
+                  aria-label={label}
+                  disabled={settingsStatus === 'loading'}
                   onClick={() => toggleSection(key)}
                 >
                   <span className="or-switch-knob" />
@@ -323,9 +389,13 @@ export default function OwnerRoom() {
             type="button"
             className="or-btn or-btn--primary or-btn--wide"
             onClick={handlePublish}
-            disabled={publishState === 'publishing'}
+            disabled={publishState === 'publishing' || settingsStatus === 'loading'}
           >
-            {publishState === 'publishing' ? '公開処理中…' : '変更を公開'}
+            {publishState === 'publishing'
+              ? '公開処理中…'
+              : settingsStatus === 'loading'
+                ? '最新の設定を読み込み中…'
+                : '変更を公開'}
           </button>
           {publishMessage && (
             <p className={`or-publish-message ${publishState === 'error' ? 'is-error' : ''}`}>
