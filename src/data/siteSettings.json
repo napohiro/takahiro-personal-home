@@ -9,7 +9,7 @@
     "gacha": false,
     "family": false,
     "possibility": false,
-    "socialLinks": false
+    "socialLinks": true
   },
   "notice": {
     "enabled": true,
