@@ -9,7 +9,7 @@ export default function PersonalCTA() {
         SNSとは少し違う、自分の「場所」を持ってみませんか？
       </p>
       <p className="footer__cta-label">
-        このページは「AIBOU PERSONAL」のサンプル第1号として作っています。
+        このページは「NAPORISE PERSONAL」のサンプル第1号として作っています。
       </p>
       <p className="footer__cta-title footer__cta-title--pending">
         じぶんホームページを作ってみる

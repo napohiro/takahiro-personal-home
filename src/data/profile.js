@@ -102,15 +102,15 @@ export const worldCards = [
 
 // 「今、やっていること」。ここを書き換えるだけで NOW セクションが更新されます。
 export const nowItems = [
-  'AIBOUというAI伴走サービスを育てている',
-  '個人ホームページ「AIBOU PERSONAL」の企画',
+  'NAPORISE新規立ち上げ',
+  'キャンプの秋',
   'AIを使ったアプリ制作',
   'LINEスタンプ制作',
   'note執筆',
-  '水泳とキャンプの計画',
+  'アイデア創出・閃き・瞑想',
 ]
 
-export const nowUpdatedAt = '2026年8月'
+export const nowUpdatedAt = '2026年9月'
 
 // NOWカードに添える手書き風の一言。
 export const nowNote = 'たぶん来月にはまた変わっています。'
