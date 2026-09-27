@@ -1,8 +1,8 @@
 {
   "sections": {
     "profile": true,
-    "myWorld": false,
-    "now": true,
+    "myWorld": true,
+    "now": false,
     "works": true,
     "favorites": true,
     "timeline": true,
